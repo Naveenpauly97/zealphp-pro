@@ -17,6 +17,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+use ZealPHP\Database\Connection;
 
 class AuthenticationMiddleware implements MiddlewareInterface
 {
@@ -46,6 +47,9 @@ class ValidationMiddleware implements MiddlewareInterface
 }
 
 App::superglobals(true);
+
+$dbConfig = require __DIR__ . '/config/database.php';
+Connection::init($dbConfig);
 
 $app = App::init('0.0.0.0', 8080);
 $app->addMiddleware(new AuthenticationMiddleware());
