@@ -50,6 +50,7 @@ class ZealAPI extends REST
                 $dir = $this->cwd.'/api'.$module;
                 $g->server['DOCUMENT_ROOT'] = App::$cwd . '/api';
                 $file = $dir.'/'.$request.'.php';
+                elog("Processing API request: ".$dir."---".$file."---".$module."---".", $request", "info-dsdsds---------------------");
                 if (file_exists($file)) {
                     include $file;
                     try {
