@@ -60,4 +60,9 @@ class TaskService
         return $this->taskRepository->update('tasks', $taskData, ['id' => $id]);
     }
 
+    public function delete(int $id): bool
+    {
+        return $this->taskRepository->delete('tasks', ['id' => $id]);
+    }
+
 }

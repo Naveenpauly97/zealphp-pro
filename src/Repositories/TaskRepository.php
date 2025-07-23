@@ -115,6 +115,7 @@ class TaskRepository
     }
     public function insert(string $table, array $data): int
     {
+        elog("Inserting Task table: {$table} with id : " . ($data['id'] ?? 'N/A'), "debug");
         $columns = implode(', ', array_keys($data));
         $placeholders = ':' . implode(', :', array_keys($data));
 
@@ -126,6 +127,7 @@ class TaskRepository
 
     public function update(string $table, array $data, array $where): bool
     {
+        elog("Updating Task table: {$table} with id : " . $where['id'], "debug");
         $setClause = implode(', ', array_map(fn($key) => "{$key} = :{$key}", array_keys($data)));
         $whereClause = implode(' AND ', array_map(fn($key) => "{$key} = :where_{$key}", array_keys($where)));
 
@@ -137,6 +139,16 @@ class TaskRepository
         }
 
         $stmt = $this->query($sql, $params);
+        return $stmt->rowCount() > 0;
+    }
+
+    public function delete(string $table, array $where): bool
+    {
+        elog("Deleting Task table: {$table} with id : " . $where['id'], "debug");
+        $whereClause = implode(' AND ', array_map(fn($key) => "{$key} = :{$key}", array_keys($where)));
+        $sql = "DELETE FROM {$table} WHERE {$whereClause}";
+
+        $stmt = $this->query($sql, $where);
         return $stmt->rowCount() > 0;
     }
 
