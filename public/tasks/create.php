@@ -13,7 +13,7 @@ if (!$task) {
     elog('No tasks found for user ID 1', 'info : TaskService getAllTasks');
     $task = [];
 }
-App::render('taskListPage', [
+App::render('tasks/createPage', [
     'title' => 'Task Dashboard',
     'description' => 'Manage your tasks efficiently',
     'task' => $task,
