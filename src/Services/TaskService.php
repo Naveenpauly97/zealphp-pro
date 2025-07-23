@@ -30,4 +30,19 @@ class TaskService
         return null;
     }
 
+    public function getTaskStats(int $userId): array
+    {
+        return $this->taskRepository->getTaskStats($userId);
+    }
+
+    public function getOverdueTasks(int $userId): array
+    {
+        return $this->taskRepository->getOverdueTasks($userId);
+    }
+
+    public function getTasksByStatus(int $userId, string $status): array
+    {
+        return $this->taskRepository->getTasksByStatus($userId, $status);
+    }
+
 }
