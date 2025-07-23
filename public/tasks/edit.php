@@ -7,13 +7,13 @@
 
 // $taskModel = new TaskService();
 // // TODO : replace with actual user ID from authentication
-// $task = $taskModel->getAllTasks(1);
+// $task = $taskModel->getTask(1,1);
 
 // if (!$task) {
 //     elog('No tasks found for user ID 1', 'info : TaskService getAllTasks');
 //     $task = [];
 // }
-// App::render('tasks/createPage', [
+// App::render('tasks/editPage', [
 //     'title' => 'Task Dashboard',
 //     'description' => 'Manage your tasks efficiently',
 //     'task' => $task,
