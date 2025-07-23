@@ -77,7 +77,7 @@
                             <button onclick="markCompleted(<?= $task->id ?>)" class="btn btn-primary">Mark Complete</button>
                         <?php endif; ?>
                         <form method="POST" action="/tasks/<?= $task->id ?>/delete" style="display: inline;"
-                            onsubmit="return confirm('Are you sure you want to delete this task?')">
+                            onsubmit="deleteTask(<?= $task->id ?>)">
                             <button type="submit" class="btn btn-danger">Delete</button>
                         </form>
                     </div>
