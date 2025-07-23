@@ -124,4 +124,20 @@ class TaskRepository
         return (int) $this->db->lastInsertId();
     }
 
+    public function update(string $table, array $data, array $where): bool
+    {
+        $setClause = implode(', ', array_map(fn($key) => "{$key} = :{$key}", array_keys($data)));
+        $whereClause = implode(' AND ', array_map(fn($key) => "{$key} = :where_{$key}", array_keys($where)));
+
+        $sql = "UPDATE {$table} SET {$setClause} WHERE {$whereClause}";
+
+        $params = $data;
+        foreach ($where as $key => $value) {
+            $params["where_{$key}"] = $value;
+        }
+
+        $stmt = $this->query($sql, $params);
+        return $stmt->rowCount() > 0;
+    }
+
 }
