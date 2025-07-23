@@ -1,36 +1,47 @@
 <?php
 
-// use ZealPHP\Services\AuthService;
 use ZealPHP\Services\TaskService;
 use function ZealPHP\elog;
 use ZealPHP\G;
 
 $get = function () {
-    // $authService = new AuthService();
-    $taskService = new TaskService();
 
-    // $user = $authService->requireAuth();
-    $g = G::instance();
+    elog('Fetching task details', 'info : TaskService getAllTasks');
+    try {
+        $g = G::instance();
+        $taskId = (int) ($g->get['id'] ?? 0);
 
-    // Extract task ID from URL path
-    $uri = $g->server['REQUEST_URI'];
-    elog("Request URI: $uri", "info---------------------------------------------");
-    if (preg_match('/\/api\/tasks\/(\d+)/', $uri, $matches)) {
-        $taskId = (int) $matches[1];
-        elog("Request taskId: $taskId", "info---------------------------------------------");
-    } else {
-        $this->response($this->json(['error' => 'Invalid task ID']), 400);
-        return;
-    }
+        if (!$taskId) {
+            $this->response($this->json([
+                'success' => false,
+                'message' => 'Task ID is required'
+            ]), 400);
+            return;
+        }
 
-    $task = $taskService->getTask($taskId, 1);
+        $taskModel = new TaskService();
+        // TODO : replace with actual user ID from authentication
+        $task = $taskModel->getAllTasks(1);
 
-    if ($task) {
+        // Check if task exists
+        if (!$task) {
+            $this->response($this->json([
+                'success' => false,
+                'message' => 'Task not found'
+            ]), 404);
+            return;
+        }
+
         $this->response($this->json([
             'success' => true,
-            'data' => $task->toArray()
+            'data' => $task
         ]), 200);
-    } else {
-        $this->response($this->json(['error' => 'Task not found']), 404);
+
+    } catch (\Exception $e) {
+        elog('Error fetching task: ' . $e->getMessage(), 'error : TaskService getAllTasks');
+        $this->response($this->json([
+            'success' => false,
+            'message' => $e->getMessage()
+        ]), $e->getMessage() === 'Authentication required' ? 401 : 500);
     }
 };

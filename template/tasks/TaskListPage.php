@@ -19,8 +19,7 @@ use ZealPHP\App;
             </div>
         </div>
     </header>
-
-    <? App::render('content'); ?>
+    <? App::render('content', ['tasks' => $task]); ?>
 
     <? App::render('_footer'); ?>
 

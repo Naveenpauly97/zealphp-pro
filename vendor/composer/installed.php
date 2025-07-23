@@ -1,9 +1,9 @@
 <?php return array(
     'root' => array(
         'name' => 'sibidharan/zealphp',
-        'pretty_version' => 'dev-master',
-        'version' => 'dev-master',
-        'reference' => '4ac59931b027d70c6e145b37327a345fe129239d',
+        'pretty_version' => 'dev-main',
+        'version' => 'dev-main',
+        'reference' => '9003a895f7f1ed0e1c5ad0b5c6a2bf54d96eef11',
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -56,9 +56,9 @@
             'dev_requirement' => false,
         ),
         'sibidharan/zealphp' => array(
-            'pretty_version' => 'dev-master',
-            'version' => 'dev-master',
-            'reference' => '4ac59931b027d70c6e145b37327a345fe129239d',
+            'pretty_version' => 'dev-main',
+            'version' => 'dev-main',
+            'reference' => '9003a895f7f1ed0e1c5ad0b5c6a2bf54d96eef11',
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),

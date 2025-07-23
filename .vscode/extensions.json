@@ -1,0 +1,10 @@
+{
+    "recommendations": [
+        "xdebug.php-debug",
+        "bmewburn.vscode-intelephense-client",
+        "ms-vscode.vscode-json",
+        "bradlc.vscode-tailwindcss",
+        "formulahendry.auto-rename-tag",
+        "ms-vscode.vscode-typescript-next"
+    ]
+}
