@@ -8,9 +8,9 @@ use ZealPHP\App;
 ?>
 
 <body>
-    <? App::render('_header' , ['user' => $user]); ?>
+    <? App::render('_header', ['user' => $user]); ?>
 
-    <? App::render('listPageContent', ['tasks' => $task]); ?>
+    <? App::render('listPageContent', ['tasks' => $task, 'stats' => $stats, 'overdue_tasks' => $overdue_tasks, 'current_status' => $current_status]); ?>
 
     <? App::render('_footer'); ?>
 

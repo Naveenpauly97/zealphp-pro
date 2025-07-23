@@ -1,13 +1,13 @@
-    <!-- Footer Java script Section -->
-    <script>
-        function markCompleted(taskId) {
-            fetch(`/api/tasks/${taskId}`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ status: 'completed' })
-            })
+<!-- Footer Java script Section -->
+<script>
+    function markCompleted(taskId) {
+        fetch(`/api/tasks/update?id=${taskId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ status: 'completed' })
+        })
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
@@ -20,5 +20,5 @@
                 console.error('Error:', error);
                 alert('Failed to update task');
             });
-        }
-    </script>
+    }
+</script>

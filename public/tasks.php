@@ -7,7 +7,16 @@ use function ZealPHP\elog;
 
 $taskModel = new TaskService();
 // TODO : replace with actual user ID from authentication
-$task = $taskModel->getAllTasks(1);
+
+if (isset($_GET['status'])) {
+    $current_status = $_GET['status'];
+    $task = $taskModel->getTasksByStatus(1, $current_status);
+} else {
+    $task = $taskModel->getAllTasks(1);
+}
+
+$stats = $taskModel->getTaskStats(1);
+$overdue_tasks = $taskModel->getOverdueTasks(1);
 
 if (!$task) {
     elog('No tasks found for user ID 1', 'info : TaskService getAllTasks');
@@ -17,4 +26,7 @@ App::render('taskListPage', [
     'title' => 'Task Dashboard',
     'description' => 'Manage your tasks efficiently',
     'task' => $task,
+    'stats' => $stats,
+    'overdue_tasks' => $overdue_tasks,
+    'current_status' => $current_status,
 ]);
