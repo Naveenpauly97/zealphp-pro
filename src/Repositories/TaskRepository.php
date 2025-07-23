@@ -80,6 +80,13 @@ class TaskRepository
         return $tasks;
     }
 
+    public function query(string $sql, array $params = []): \PDOStatement
+    {
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute($params);
+        return $stmt;
+    }
+
     public function getTaskStats(int $userId): array
     {
         $stmt = $this->db->prepare(
@@ -106,4 +113,15 @@ class TaskRepository
 
         return $stats;
     }
+    public function insert(string $table, array $data): int
+    {
+        $columns = implode(', ', array_keys($data));
+        $placeholders = ':' . implode(', :', array_keys($data));
+
+        $sql = "INSERT INTO {$table} ({$columns}) VALUES ({$placeholders})";
+        $this->query($sql, $data);
+
+        return (int) $this->db->lastInsertId();
+    }
+
 }

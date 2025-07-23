@@ -45,4 +45,11 @@ class TaskService
         return $this->taskRepository->getTasksByStatus($userId, $status);
     }
 
+    public function create(array $taskData): int
+    {
+        $taskData['created_at'] = date('Y-m-d H:i:s');
+        $taskData['updated_at'] = date('Y-m-d H:i:s');
+
+        return $this->taskRepository->insert('tasks', $taskData);
+    }
 }
