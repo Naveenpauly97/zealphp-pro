@@ -21,7 +21,7 @@ $get = function () {
 
         $taskModel = new TaskService();
         // TODO : replace with actual user ID from authentication
-        $task = $taskModel->getAllTasks(1);
+        $task = $taskModel->getTask($taskId,1);
 
         // Check if task exists
         if (!$task) {

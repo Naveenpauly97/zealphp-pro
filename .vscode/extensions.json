@@ -5,6 +5,7 @@
         "ms-vscode.vscode-json",
         "bradlc.vscode-tailwindcss",
         "formulahendry.auto-rename-tag",
-        "ms-vscode.vscode-typescript-next"
+        "ms-vscode.vscode-typescript-next",
+        "felixfbecker.php-debug",
     ]
 }
