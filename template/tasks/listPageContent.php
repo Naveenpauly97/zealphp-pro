@@ -76,10 +76,7 @@
                         <?php if (!$task->isCompleted()): ?>
                             <button onclick="markCompleted(<?= $task->id ?>)" class="btn btn-primary">Mark Complete</button>
                         <?php endif; ?>
-                        <form method="POST" action="/tasks/<?= $task->id ?>/delete" style="display: inline;"
-                            onsubmit="deleteTask(<?= $task->id ?>)">
-                            <button type="submit" class="btn btn-danger">Delete</button>
-                        </form>
+                        <button onclick="deleteTask(<?= $task->id ?>)" class="btn btn-danger">Delete</button>
                     </div>
                 </div>
             <?php endforeach; ?>
