@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+    container_name: zealphp-app
+    working_dir: /app
+    volumes:
+      - .:/app
+    ports:
+      - "8081:8080"
+    depends_on:
+      - db
+    environment:
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_DATABASE: zealphp
+      DB_USERNAME: root
+      DB_PASSWORD: root
+
+  db:
+    image: mysql:8.0
+    container_name: zealphp-db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: zealphp
+    ports:
+      - "3307:3306"
