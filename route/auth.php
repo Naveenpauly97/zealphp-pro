@@ -87,7 +87,7 @@ $app->route('/register', ['methods' => ['GET', 'POST']], function() {
         }
     }
 
-    App::render('auth/register', [
+    App::render('/auth/register', [
         'title' => 'Register',
         'errors' => $errors ?? []
     ]);
