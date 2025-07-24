@@ -32,7 +32,7 @@ $app->route('/login', ['methods' => ['GET', 'POST']], function() {
         }
     }
 
-    App::render('auth/login', [
+    App::render('/auth/login', [
         'title' => 'Login',
         'error' => $error ?? null
     ]);

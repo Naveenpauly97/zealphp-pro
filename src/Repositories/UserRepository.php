@@ -68,6 +68,30 @@ class UserRepository
         return null;
     }
 
+        public function createUserSession(array $userData): ?User
+    {
+        try {
+            $stmt = $this->db->prepare(
+                'INSERT INTO user_sessions (user_id, `data`) VALUES (?, ?)'
+            );
+            
+            $result = $stmt->execute([
+                $userData['user_id'],
+                $userData['data']
+            ]);
+
+            if ($result) {
+                $id = $this->db->lastInsertId();
+                elog("User Session created with ID: $id");
+                return $this->findById((int)$id);
+            }
+        } catch (\PDOException $e) {
+            elog("Failed to create user session: " . $e->getMessage(), "error");
+        }
+
+        return null;
+    }
+
     public function update(int $id, array $userData): bool
     {
         try {
