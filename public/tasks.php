@@ -8,6 +8,12 @@ use function ZealPHP\elog;
 $taskModel = new TaskService();
 // TODO : replace with actual user ID from authentication
 
+$user = [
+    'user_id' => 1,
+    'username' => 'john_doe',
+    'email' => 'john@gmail.com'
+];
+
 if (isset($_GET['status'])) {
     $current_status = $_GET['status'];
     $task = $taskModel->getTasksByStatus(1, $current_status);
@@ -25,6 +31,7 @@ if (!$task) {
 App::render('taskListPage', [
     'title' => 'Task Dashboard',
     'description' => 'Manage your tasks efficiently',
+    'user' => $user,
     'task' => $task,
     'stats' => $stats,
     'overdue_tasks' => $overdue_tasks,
