@@ -53,16 +53,16 @@ class TaskService
         return $this->taskRepository->insert('tasks', $taskData);
     }
 
-    public function update(int $id, array $taskData): bool
+    public function updateTaskByUserId(int $id, int $userId, array $taskData): bool
     {
         $taskData['updated_at'] = date('Y-m-d H:i:s');
 
-        return $this->taskRepository->update('tasks', $taskData, ['id' => $id]);
+        return $this->taskRepository->update('tasks', $taskData, ['id' => $id, 'user_id' => $userId]);
     }
 
-    public function delete(int $id): bool
+    public function deleteTaskByUserId(int $id, int $userId): bool
     {
-        return $this->taskRepository->delete('tasks', ['id' => $id]);
+        return $this->taskRepository->delete('tasks', ['id' => $id, 'user_id' => $userId]);
     }
 
 }

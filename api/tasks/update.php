@@ -91,7 +91,7 @@ $update = function () {
             return;
         }
 
-        $success = $taskModel->update($taskId, $updateData);
+        $success = $taskModel->updateTaskByUserId($taskId, $userId , $updateData);
 
         if ($success) {
             $updatedTask = $taskModel->getTask($taskId, $userId);

@@ -40,7 +40,7 @@ $delete = function () {
             return;
         }
 
-        $success = $taskModel->delete($taskId);
+        $success = $taskModel->deleteTaskByUserId($taskId,$userId );
 
         if ($success) {
             $this->response($this->json([
