@@ -117,7 +117,7 @@ $app->route('/tasks/{taskId}/edit', ['methods' => ['GET']], function ($taskId) {
         $taskModel = new TaskService();
         $task = $taskModel->getTask($taskId, $userId);
         if (!$task) {
-            elog('No tasks found for user ID 1', 'info : TaskService getAllTasks');
+            elog('No tasks found for user ID ' . $userId, 'info : TaskService getAllTasks');
             throw new Exception('Task not found for User ID : ' . $userId);
         }
         App::render('/tasks/editPage', ['task' => $task]);
