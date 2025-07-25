@@ -74,7 +74,7 @@ $app->route('/tasks/update/{taskId}', ['methods' => ['POST']], function ($taskId
             throw new Exception('No valid fields to update');
         }
 
-        $success = $taskModel->update($taskId, $updateData);
+        $success = $taskModel->updateTaskByUserId($taskId,  $userId,$updateData);
 
         if ($success) {
             $updatedTask = $taskModel->getTask($taskId, $userId);
