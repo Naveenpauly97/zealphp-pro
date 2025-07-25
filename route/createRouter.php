@@ -66,15 +66,15 @@ $app->route('/tasks/create/{userId}', ['methods' => ['POST']], function ($userId
 
 $app->route('/tasks/create', ['methods' => ['GET']], function () {
     $authService = new AuthService();
-    $userId = $authService->getCurrentUser()->id;
-    $isValidUser = $userId ? $authService->validateUserOwnership($userId) : false;
+    $user = $authService->getCurrentUser();
+    $isValidUser = $user->id ? $authService->validateUserOwnership($user->id) : false;
 
     if (!$isValidUser) {
-        elog("Unauthorized access attempt by user ID: $userId", "error");
+        elog("Unauthorized access attempt by user ID: $user->id", "error");
         http_response_code(403);
         echo json_encode(['error' => 'Unauthorized']);
         return;
     }
     elog("Rendering create task page");
-    App::render('/tasks/createPage');
+    App::render('/tasks/createPage', ['user' => $user]);
 });
