@@ -2,27 +2,31 @@
 
 
 use ZealPHP\App;
+use ZealPHP\Services\AuthService;
 use ZealPHP\Services\TaskService;
+use ZealPHP\Session;
+
 use function ZealPHP\elog;
 
+$authService = new AuthService();
 $taskModel = new TaskService();
-// TODO : replace with actual user ID from authentication
 
-$user = [
-    'user_id' => 1,
-    'username' => 'john_doe',
-    'email' => 'john@gmail.com'
-];
+$user = $authService->getCurrentUser();
+if (!$user) {
+    elog('User not found in session', 'error : TaskService getAllTasks');
+    header('Location: /login');
+    exit;
+}
 
 if (isset($_GET['status'])) {
     $current_status = $_GET['status'];
-    $task = $taskModel->getTasksByStatus(1, $current_status);
+    $task = $taskModel->getTasksByStatus($user->id, $current_status);
 } else {
-    $task = $taskModel->getAllTasks(1);
+    $task = $taskModel->getAllTasks($user->id);
 }
 
-$stats = $taskModel->getTaskStats(1);
-$overdue_tasks = $taskModel->getOverdueTasks(1);
+$stats = $taskModel->getTaskStats($user->id);
+$overdue_tasks = $taskModel->getOverdueTasks($user->id);
 
 if (!$task) {
     elog('No tasks found for user ID 1', 'info : TaskService getAllTasks');

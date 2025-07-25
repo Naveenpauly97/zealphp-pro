@@ -1,6 +1,7 @@
 <?
 
 use ZealPHP\App;
+use ZealPHP\Services\AuthService;
 use ZealPHP\Services\TaskService;
 use function ZealPHP\elog;
 
@@ -9,6 +10,17 @@ $app = App::instance();
 $app->route('/tasks/update/{taskId}', ['methods' => ['POST']], function ($taskId) {
 
     try {
+
+        $authService = new AuthService();
+        $userId = $authService->getCurrentUser()->id;
+        $isValidUser = $userId ? $authService->validateUserOwnership($userId) : false;
+
+        if (!$isValidUser) {
+            elog("Unauthorized access attempt by user ID: $userId", "error");
+            http_response_code(403);
+            echo json_encode(['error' => 'Unauthorized']);
+            return;
+        }
 
         $input = json_decode(file_get_contents('php://input'), true);
 
@@ -26,10 +38,10 @@ $app->route('/tasks/update/{taskId}', ['methods' => ['POST']], function ($taskId
         // }
 
         $taskModel = new TaskService();
-        $existingTask = $taskModel->getTask($taskId, 1);
+        $existingTask = $taskModel->getTask($taskId, $userId);
 
         if (!$existingTask) {
-            throw new Exception('Task not found for User ID : 1');
+            throw new Exception('Task not found for User ID : ' . $userId);
         }
 
         // Prepare update data
@@ -65,7 +77,7 @@ $app->route('/tasks/update/{taskId}', ['methods' => ['POST']], function ($taskId
         $success = $taskModel->update($taskId, $updateData);
 
         if ($success) {
-            $updatedTask = $taskModel->getTask($taskId, 1);
+            $updatedTask = $taskModel->getTask($taskId, $userId);
             ?>
             <script>
                 alert('Task updated successfully for task ID: <?= $updatedTask->id ?>');
@@ -91,12 +103,27 @@ $app->route('/tasks/update/{taskId}', ['methods' => ['POST']], function ($taskId
 
 $app->route('/tasks/{taskId}/edit', ['methods' => ['GET']], function ($taskId) {
 
-    $taskModel = new TaskService();
-    // TODO : replace with actual user ID from authentication
-    $task = $taskModel->getTask($taskId, 1);
-    if (!$task) {
-        elog('No tasks found for user ID 1', 'info : TaskService getAllTasks');
-        $task = [];
+    try {
+        $authService = new AuthService();
+        $userId = $authService->getCurrentUser()->id;
+        $isValidUser = $userId ? $authService->validateUserOwnership($userId) : false;
+
+        if (!$isValidUser) {
+            elog("Unauthorized access attempt by user ID: $userId", "error");
+            http_response_code(403);
+            echo json_encode(['error' => 'Unauthorized']);
+            return;
+        }
+        $taskModel = new TaskService();
+        $task = $taskModel->getTask($taskId, $userId);
+        if (!$task) {
+            elog('No tasks found for user ID 1', 'info : TaskService getAllTasks');
+            throw new Exception('Task not found for User ID : ' . $userId);
+        }
+        App::render('/tasks/editPage', ['task' => $task]);
+    } catch (\Exception $e) {
+        elog("Error fetching task for edit: " . $e->getMessage(), "Exception");
+        header('Location: /tasks');
+        exit;
     }
-    App::render('/tasks/editPage', ['task' => $task]);
 });

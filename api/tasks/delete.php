@@ -1,11 +1,23 @@
 <?php
 
+use ZealPHP\Services\AuthService;
 use ZealPHP\Services\TaskService;
 use ZealPHP\G;
 use function ZealPHP\elog;
 
 $delete = function () {
     try {
+        $authService = new AuthService();
+        $userId = $authService->getCurrentUser()->id;
+        $isValidUser = $userId ? $authService->validateUserOwnership($userId) : false;
+
+        if (!$isValidUser) {
+            elog("Unauthorized access attempt by user ID: $userId", "error");
+            http_response_code(403);
+            echo json_encode(['error' => 'Unauthorized']);
+            return;
+        }
+
         $g = G::instance();
         $taskId = (int) ($g->get['id'] ?? 0);
 
@@ -18,7 +30,7 @@ $delete = function () {
         }
 
         $taskModel = new TaskService();
-        $task = $taskModel->getTask($taskId, 1);
+        $task = $taskModel->getTask($taskId, $userId);
 
         if (!$task) {
             $this->response($this->json([

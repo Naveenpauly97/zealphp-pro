@@ -52,8 +52,8 @@ class SessionManager
     ) {
         $this->middleware = $middleware;
         $this->idGenerator = $idGenerator;
-        $this->useCookies = is_null($useCookies) ? (bool)ini_get('session.use_cookies') : $useCookies;
-        $this->useOnlyCookies = is_null($useOnlyCookies) ? (bool)ini_get('session.use_only_cookies') : $useOnlyCookies;
+        $this->useCookies = is_null($useCookies) ? (bool) ini_get('session.use_cookies') : $useCookies;
+        $this->useOnlyCookies = is_null($useOnlyCookies) ? (bool) ini_get('session.use_only_cookies') : $useOnlyCookies;
         $this->g = G::instance();
     }
 
@@ -64,14 +64,16 @@ class SessionManager
     /**
      * Delegate execution to the underlying middleware wrapping it into the session start/stop calls
      */
-    public function __invoke($request,$response)
+    public function __invoke($request, $response)
     {
         $g = G::instance();
-        if(isset($_SESSION) and isset($_SESSION['__start_time'])) {
+        if (isset($_SESSION) and isset($_SESSION['__start_time'])) {
             elog('[warn] Session leak detected');
         }
-        unset($_SESSION);
-        $_SESSION = [];
+        // This part commented for prevent the session values in multiple requests
+        // Due to this un set values are clear all the session values 
+        // unset($_SESSION);
+        // $_SESSION = [];
         $sessionName = session_name();
         if ($this->useCookies && isset($request->cookie[$sessionName])) {
             $sessionId = $request->cookie[$sessionName];
@@ -85,7 +87,9 @@ class SessionManager
         $handler = new FileSessionHandler();
         session_set_save_handler($handler, true);
 
-        session_start();
+        // This part commented for prevent the session values in multiple requests
+        // Due to this un set values are clear all the session values 
+        // session_start();
 
         if ($this->useCookies) {
             $cookie = session_get_cookie_params();
@@ -113,11 +117,13 @@ class SessionManager
             $g->zealphp_response = $response;
             call_user_func($this->middleware, $request, $response);
         } finally {
-            elog('SessionManager:: session_write_close took '.get_current_render_time(), 'info');
+            elog('SessionManager:: session_write_close took ' . get_current_render_time(), 'info');
             session_write_close();
             session_id('');
-            $_SESSION = [];
-            unset($_SESSION);
+            // This part commented for prevent the session values in multiple requests
+            // Due to this un set values are clear all the session values 
+            // $_SESSION = [];
+            // unset($_SESSION);
         }
     }
 }

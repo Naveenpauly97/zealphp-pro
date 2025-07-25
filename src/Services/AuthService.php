@@ -5,6 +5,8 @@ namespace ZealPHP\Services;
 use ZealPHP\Models\User;
 use ZealPHP\Repositories\UserRepository;
 use ZealPHP\G;
+use ZealPHP\Session;
+
 use function ZealPHP\elog;
 
 class AuthService
@@ -19,13 +21,14 @@ class AuthService
     public function login(string $username, string $password): ?User
     {
         $user = $this->userRepository->findByUsername($username);
-        
+
         if (!$user) {
             $user = $this->userRepository->findByEmail($username);
         }
 
         if ($user && $user->verifyPassword($password)) {
             $this->setUserSession($user);
+            Session::set('user', $user->toArray());
             elog("User logged in: " . $user->username);
             return $user;
         }
@@ -59,7 +62,7 @@ class AuthService
         }
 
         $user = $this->userRepository->create($userData);
-        
+
         if ($user) {
             $this->setUserSession($user);
             elog("User registered: " . $user->username);
@@ -79,7 +82,7 @@ class AuthService
     public function getCurrentUser(): ?User
     {
         $g = G::instance();
-        
+
         if (empty($g->session['user_id'])) {
             return null;
         }
@@ -91,7 +94,7 @@ class AuthService
 
         // Load user from database
         $user = $this->userRepository->findById($g->session['user_id']);
-        
+
         if ($user) {
             $g->session['user'] = $user->toArray();
         }
@@ -107,7 +110,7 @@ class AuthService
     public function requireAuth(): User
     {
         $user = $this->getCurrentUser();
-        
+
         if (!$user) {
             http_response_code(401);
             header('Location: /login');

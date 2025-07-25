@@ -1,5 +1,6 @@
 <?php
 
+use ZealPHP\Services\AuthService;
 use ZealPHP\Services\TaskService;
 use ZealPHP\G;
 use function ZealPHP\elog;
@@ -7,6 +8,16 @@ use function ZealPHP\elog;
 $update = function () {
     try {
         $g = G::instance();
+        $authService = new AuthService();
+        $userId = $authService->getCurrentUser()->id;
+        $isValidUser = $userId ? $authService->validateUserOwnership($userId) : false;
+
+        if (!$isValidUser) {
+            elog("Unauthorized access attempt by user ID: $userId", "error");
+            http_response_code(403);
+            echo json_encode(['error' => 'Unauthorized']);
+            return;
+        }
         $taskId = (int) ($g->get['id'] ?? 0);
 
         if (!$taskId) {
@@ -28,7 +39,7 @@ $update = function () {
         }
 
         $taskModel = new TaskService();
-        $existingTask = $taskModel->getTask($taskId, 1);
+        $existingTask = $taskModel->getTask($taskId, $userId);
 
         if (!$existingTask) {
             $this->response($this->json([
@@ -83,7 +94,7 @@ $update = function () {
         $success = $taskModel->update($taskId, $updateData);
 
         if ($success) {
-            $updatedTask = $taskModel->getTask($taskId, 1);
+            $updatedTask = $taskModel->getTask($taskId, $userId);
             $this->response($this->json([
                 'success' => true,
                 'message' => 'Task updated successfully',

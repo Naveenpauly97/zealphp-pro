@@ -1,6 +1,7 @@
 <?
 
 use ZealPHP\App;
+use ZealPHP\Services\AuthService;
 use ZealPHP\Services\TaskService;
 use function ZealPHP\elog;
 
@@ -8,23 +9,24 @@ $app = App::instance();
 
 $app->route('/tasks/create/{userId}', ['methods' => ['POST']], function ($userId) {
     try {
+        $authService = new AuthService();
+        $isValidUser = $authService->validateUserOwnership($userId);
+
+        if (!$isValidUser) {
+            elog("Unauthorized access attempt by user ID: $userId", "error");
+            http_response_code(403);
+            echo json_encode(['error' => 'Unauthorized']);
+            return;
+        }
+
         $input = json_decode(file_get_contents('php://input'), true);
 
         if (!$input) {
             $input = $_POST; // Fallback to POST data if JSON is not provided
         }
 
-        // TODO: Handle /tasks/create error messages
-        // if (!$input || empty($input['title'])) {
-        //     $this->response($this->json([
-        //         'success' => false,
-        //         'message' => 'Title is required'
-        //     ]), 400);
-        //     return;
-        // }
-
         $taskData = [
-            'user_id' => 1,
+            'user_id' => $userId,
             'title' => $input['title'],
             'description' => $input['description'] ?? '',
             'status' => $input['status'] ?? 'pending',
