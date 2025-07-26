@@ -5,15 +5,21 @@ namespace ZealPHP\Repositories;
 use PDO;
 use ZealPHP\Database\Connection;
 use ZealPHP\Models\Task;
+use ZealPHP\Services\TaskLogService;
+use ZealPHP\Session;
+
 use function ZealPHP\elog;
 
 class TaskRepository
 {
     private PDO $db;
 
+    private TaskLogService $taskLogService;
+
     public function __construct()
     {
         $this->db = Connection::getInstance();
+        $this->taskLogService = new TaskLogService();
     }
 
     public function findById(int $id): ?Task
@@ -122,12 +128,34 @@ class TaskRepository
         $sql = "INSERT INTO {$table} ({$columns}) VALUES ({$placeholders})";
         $this->query($sql, $data);
 
-        return (int) $this->db->lastInsertId();
+        $insertedId = (int) $this->db->lastInsertId();
+        if ($insertedId > 0) {
+            try {
+                //TODO: Need to implemet Code reusability for logging
+                elog("Task inserted with ID: {$insertedId}", "debug");
+
+                $newValues = json_encode($this->findById($insertedId));
+                $logData = [
+                    'task_id' => $insertedId,
+                    'user_id' => Session::get('user_id') ?? null,
+                    'action' => 'insert',
+                    'new_values' => $newValues
+                ];
+                $this->taskLogService->create($logData);
+                elog("Task log created for deletion of task ID: " . $insertedId, "debug");
+            } catch (\Exception $e) {
+                elog("Error creating task log for insertion: " . $e->getMessage(), "error");
+            }
+            return $insertedId;
+        }
+        return 0;
     }
 
     public function update(string $table, array $data, array $where): bool
     {
         elog("Updating Task table: {$table} with id : " . $where['id'], "debug");
+        $oldValues = json_encode($this->findById($where['id']));
+
         $setClause = implode(', ', array_map(fn($key) => "{$key} = :{$key}", array_keys($data)));
         $whereClause = implode(' AND ', array_map(fn($key) => "{$key} = :where_{$key}", array_keys($where)));
 
@@ -139,17 +167,54 @@ class TaskRepository
         }
 
         $stmt = $this->query($sql, $params);
-        return $stmt->rowCount() > 0;
+
+        if ($stmt->rowCount() > 0) {
+            elog("Updated Task data table: {$table} with id : " . $where['id'], "debug");
+            try {
+                $newValues = json_encode($this->findById($where['id']));
+                $logData = [
+                    'task_id' => $where['id'],
+                    'user_id' => Session::get('user_id') ?? null,
+                    'action' => 'update',
+                    'new_values' => $newValues,
+                    'old_values' => $oldValues
+                ];
+                $this->taskLogService->create($logData);
+                elog("Task log created for updation of task ID: " . $where['id'], "debug");
+            } catch (\Exception $e) {
+                elog("Error creating task log for updation: " . $e->getMessage(), "error");
+            }
+            return true;
+        }
+        return false;
+
+
     }
 
     public function delete(string $table, array $where): bool
     {
         elog("Deleting Task table: {$table} with id : " . $where['id'], "debug");
         $whereClause = implode(' AND ', array_map(fn($key) => "{$key} = :{$key}", array_keys($where)));
+        $oldValues = json_encode($this->findById($where['id']));
         $sql = "DELETE FROM {$table} WHERE {$whereClause}";
-
         $stmt = $this->query($sql, $where);
-        return $stmt->rowCount() > 0;
+        elog("Deleted Task table: {$table} with id : " . $where['id'], "debug");
+        if ($stmt->rowCount() > 0) {
+            try {
+                $logData = [
+                    'task_id' => $where['id'],
+                    'user_id' => Session::get('user_id') ?? null,
+                    'action' => 'delete',
+                    'old_values' => $oldValues
+                ];
+                $this->taskLogService->create($logData);
+                elog("Task log created for deletion of task ID: " . $where['id'], "debug");
+            } catch (\Exception $e) {
+                elog("Error creating task log for deletion: " . $e->getMessage(), "error");
+            }
+            return true;
+        }
+        return false;
     }
 
 }

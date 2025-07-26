@@ -39,7 +39,7 @@
 
             <div class="form-group">
                 <label for="due_date">Due Date</label>
-                <input type="date" id="due_date" name="due_date" value="<?= $_POST['due_date'] ?? '' ?>">
+                <input type="date" id="due_date" required name="due_date" value="<?= $_POST['due_date'] ?? '' ?>">
             </div>
 
             <div class="form-actions">

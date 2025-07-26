@@ -60,6 +60,8 @@ $app->route('/tasks/create/{userId}', ['methods' => ['POST']], function ($userId
 
     } catch (\Exception $e) {
         elog("Task creation error: " . $e->getMessage(), "error");
+        header('Location: /tasks');
+        exit;
     }
 
 });
