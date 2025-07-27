@@ -6,7 +6,6 @@
 -- USE zealphp_tasks;
 drop table if exists task_logs;
 drop table if exists tasks;
-drop table if exists user_sessions;
 drop table if exists users;
 
 -- Users table for authentication
@@ -55,18 +54,6 @@ CREATE TABLE `task_logs` (
   KEY `idx_created_at` (`created_at`),
   CONSTRAINT `task_logs_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- Sessions table for session management
--- CREATE TABLE IF NOT EXISTS user_sessions (
---     id VARCHAR(128) PRIMARY KEY,
---     user_id INT NOT NULL,
---     data TEXT,
---     expires_at TIMESTAMP NOT NULL,
---     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
---     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
---     INDEX idx_user_id (user_id),
---     INDEX idx_expires_at (expires_at)
--- ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Insert sample data (optional)
 INSERT IGNORE INTO users (username, email, password_hash) VALUES 
