@@ -18,6 +18,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use ZealPHP\Database\Connection;
+use ZealPHP\Middleware\AuthMiddleware;
 
 class AuthenticationMiddleware implements MiddlewareInterface
 {
@@ -54,6 +55,7 @@ Connection::init($dbConfig);
 $app = App::init('0.0.0.0', 8080);
 $app->addMiddleware(new AuthenticationMiddleware());
 $app->addMiddleware(new ValidationMiddleware());
+$app->addMiddleware(new AuthMiddleware());
 elog("Middleware added");
 # Route for /phpinfo 
 $app->route('/phpinfo', function() {
