@@ -18,7 +18,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use ZealPHP\Database\Connection;
-use ZealPHP\Middleware\AuthMiddleware;
+use ZealPHP\Services\AuthService;
 
 class AuthenticationMiddleware implements MiddlewareInterface
 {
@@ -44,6 +44,53 @@ class ValidationMiddleware implements MiddlewareInterface
         // elog($data, "validate");;
         $g->session['validate'] = 'test';
         return $handler->handle($request);
+    }
+}
+class AuthMiddleware implements MiddlewareInterface
+{
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
+    {
+
+        elog("AuthMiddleware: process()");
+        $authService = new AuthService();
+        $g = G::instance();
+        $uri = $g->server['REQUEST_URI'];
+
+        $publicRoutes = ['/login', '/register', '/api/auth/login', '/api/auth/register', '/about'];
+        
+        foreach ($publicRoutes as $route) {
+            elog("AuthMiddleware: process() foreeach iterate URI: ". $route);
+            if (strpos($uri, $route) === 0) {
+                elog("AuthMiddleware: process() foreach contiotion -------------- URI: ". $uri);
+                return $handler->handle($request);
+            }
+        }
+         // Check if user is authenticated
+        if (!$authService->isAuthenticated()) {
+            elog("AuthMiddleware: process() isAuthenticated contiotion start -------------- URI: ");
+            // For API routes, return JSON error
+            if (strpos($uri, '/api/') === 0) {
+                return new Response(
+                    json_encode(['error' => 'Authentication required']),
+                    401,
+                    'Unauthorized',
+                    ['Content-Type' => 'application/json']
+                );
+            }
+            
+            // For web routes, redirect to login
+            elog("AuthMiddleware: process() isAuthenticated contiotion end-------------- URI: ");
+            return new Response(
+                '',
+                302,
+                'Found',
+                ['Location' => '/login']
+            );
+        }
+           
+        elog("AuthMiddleware: process() end-------------- URI: ");
+        return $handler->handle($request);
+
     }
 }
 
