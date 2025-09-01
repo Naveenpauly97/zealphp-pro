@@ -50,13 +50,13 @@ class ZealAPI extends REST
                 $dir = $this->cwd.'/api'.$module;
                 $g->server['DOCUMENT_ROOT'] = App::$cwd . '/api';
                 $file = $dir.'/'.$request.'.php';
-                elog("Processing API request: ".$dir."---".$file."---".$module."---".", $request", "info-dsdsds---------------------");
+                //elog"Processing API request: ".$dir."---".$file."---".$module."---".", $request", "info-dsdsds---------------------");
                 if (file_exists($file)) {
                     include $file;
                     try {
                         $this->api_rpc = \Closure::bind(${$func}, $this, get_class());
                     } catch (\TypeError $e) {
-                        elog(jTraceEx($e), "error");
+                        //elogjTraceEx($e), "error");
                         $this->response($this->json(['error'=>'method_not_found']), 404);
                         return;
                     }
@@ -163,7 +163,7 @@ class ZealAPI extends REST
             "stack" => jTraceEx($e),
             "type" => "exception"
         ];
-        elog(jTraceEx($e), "error");
+        //elogjTraceEx($e), "error");
         $response_code = 400;
         if ($e->getMessage() == "Expired token" || $e->getMessage() == "Unauthorized") {
             $response_code = 403;

@@ -6,6 +6,8 @@
 -- USE zealphp_tasks;
 drop table if exists task_logs;
 drop table if exists tasks;
+drop table if exists usr_sokt_dtls;
+drop table if exists usr_sessn;
 drop table if exists users;
 
 -- Users table for authentication
@@ -18,6 +20,32 @@ CREATE TABLE IF NOT EXISTS users (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     INDEX idx_username (username),
     INDEX idx_email (email)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE `usr_sessn` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `user_id` int NOT NULL,
+  `token` varchar(251) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `ipaddress` varchar(13) NOT NULL,
+  `user_agent` varchar(250) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `login_time_stamp` datetime NOT NULL,
+  `logout_time_stamp` datetime DEFAULT NULL,
+  `is_active` int NOT NULL DEFAULT '1',
+  PRIMARY KEY (`id`),
+  CONSTRAINT `user_sessions_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `usr_sokt_dtls` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `user_id` int NOT NULL,
+  `fd` int NOT NULL,
+  `md5_hash` varchar(32) NULL,
+  `password_hash` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+  INDEX idx_user_id (user_id),
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Tasks table
@@ -57,7 +85,7 @@ CREATE TABLE `task_logs` (
 
 -- Insert sample data (optional)
 INSERT IGNORE INTO users (username, email, password_hash) VALUES 
-('admin', 'admin@example.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi'), -- password: password
+('admin', 'admin@example.com', '$2y$10$XMhXC/FGLHRg3IAS2.zDiOmkGS4sRsueuzOOnbcfssIkzEJnaJq9q'), -- password: Naveen@1234
 ('demo', 'demo@example.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi');   -- password: password
 
 INSERT IGNORE INTO tasks (user_id, title, description, status, priority, due_date) VALUES 

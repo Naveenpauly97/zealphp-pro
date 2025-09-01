@@ -21,6 +21,16 @@ class Task
         }
     }
 
+    public static function builder(array $data): array
+    {
+        $tasks = [];
+        foreach ($data as $item) {
+            $task = new self($item);
+            $tasks[] = $task;
+        }
+        return $tasks;
+    }
+
     public function fill(array $data): void
     {
         foreach ($data as $key => $value) {

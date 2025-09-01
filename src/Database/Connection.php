@@ -2,14 +2,23 @@
 
 namespace ZealPHP\Database;
 
+use ZealPHP\App;
 use PDO;
 use PDOException;
-use ZealPHP\App;
+use MongoDB\Client as MongoClient;
+use PhpAmqpLib\Connection\AMQPStreamConnection;
 use function ZealPHP\elog;
+
+// Load all traits
+use ZealPHP\Database\Traits\MySQLTrait;
+use ZealPHP\Database\Traits\PostgresTrait;
+use ZealPHP\Database\Traits\MongoDBTrait;
+use ZealPHP\Database\Traits\RabbitMQTrait;
 
 class Connection
 {
-    private static ?PDO $instance = null;
+    use MySQLTrait, PostgresTrait, MongoDBTrait, RabbitMQTrait;
+
     private static array $config = [];
 
     public static function init(array $config): void
@@ -17,29 +26,21 @@ class Connection
         self::$config = $config;
     }
 
-    public static function getInstance(): PDO
+    public static function getConfig(string $service): array
     {
-        if (self::$instance === null) {
-            self::connect();
+        if (!isset(self::$config['connections'][$service])) {
+            throw new \RuntimeException("Configuration for service '{$service}' not found.");
         }
-        
-        return self::$instance;
+        return self::$config['connections'][$service];
     }
 
-    private static function connect(): void
+    public static function loadEnv(): void
     {
-        $config = self::$config['connections']['mysql'];
-        
-        $dsn = sprintf(
-            'mysql:host=%s;port=%d;dbname=%s;charset=%s',
-            $config['host'],
-            $config['port'],
-            $config['database'],
-            $config['charset']
-        );
-        // Load environment variables from .env file
-        if (file_exists(App::$cwd . '/.env')) {
-            $lines = file(App::$cwd . '/.env', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+        $homePath = !empty(App::$cwd) ? App::$cwd : '/app';
+
+        $envPath = $homePath . '/.env';
+        if (file_exists($envPath)) {
+            $lines = file($envPath, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
             foreach ($lines as $line) {
                 if (strpos(trim($line), '#') === 0) {
                     continue;
@@ -48,30 +49,5 @@ class Connection
                 putenv(trim($name) . '=' . trim($value));
             }
         }
-
-        try {
-            self::$instance = new PDO(
-                $dsn,
-                $config['username'],
-                $config['password'],
-                $config['options']
-            );
-            
-            elog("Database connected successfully");
-        } catch (PDOException $e) {
-            elog("Database connection failed: " . $e->getMessage(), "error");
-            throw $e;
-        }
-    }
-
-    public static function reconnect(): void
-    {
-        self::$instance = null;
-        self::connect();
-    }
-
-    public static function close(): void
-    {
-        self::$instance = null;
     }
 }

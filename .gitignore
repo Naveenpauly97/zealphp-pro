@@ -1,0 +1,42 @@
+# ZealTasks .gitignore
+
+# Logs
+*.log
+logs/
+
+# Composer
+
+# IDE files
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Environment files
+# .env
+# .env.local
+
+# Cache and temporary files
+cache/
+tmp/
+temp/
+
+# Session files
+/var/lib/php/sessions/
+
+# Node modules (if any)
+node_modules/
+
+# Build files
+build/
+dist/
+
+#log files
+ws.log
+app.log
+last_app_ps_id.txt
+last_ws_ps_id.txt
+

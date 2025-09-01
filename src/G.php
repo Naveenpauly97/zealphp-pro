@@ -20,7 +20,7 @@ class G
             $bt = debug_backtrace();
             $bt = array_shift($bt);
 
-            elog("Creating new G instance from $bt[file]:$bt[line]");
+            //elog"Creating new G instance from $bt[file]:$bt[line]");
             self::$instance = new G();
         }
         return self::$instance;

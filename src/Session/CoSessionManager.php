@@ -56,7 +56,7 @@ class CoSessionManager
     {
         $g = $this->g;
         if(isset($g->session) and isset($g->session['__start_time'])) {
-            elog('[warn] Session leak detected');
+            //elog'[warn] Session leak detected');
         }
         unset($g->session);
         $g->session = [];
@@ -106,7 +106,7 @@ class CoSessionManager
             call_user_func($this->middleware, $request, $response);
             // elog('SessionManager:: middleware executed');
         } finally {
-            elog('SessionManager:: session_write_close took '.get_current_render_time(), 'info');
+            //elog'SessionManager:: session_write_close took '.get_current_render_time(), 'info');
             zeal_session_write_close();
             zeal_session_id('');
             $g->session = [];

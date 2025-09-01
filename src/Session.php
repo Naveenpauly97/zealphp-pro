@@ -142,7 +142,7 @@ class Session
                     $g->session[$k] = $v;
                 }
             } else {
-                elog("No session id", "fatal");
+                //elog"No session id", "fatal");
             }
         } else {
             session_start();
@@ -217,9 +217,9 @@ class Session
 
     /**
      * Session wide property sharing method, which gets the value against a key. If default is supplied, when key is not found, default is returned.
-     * @param  String $key
-     * @param Bool $default
-     * @return Any
+     * @param  string $key
+     * @param bool $default
+     * @return mixed
      */
     public static function get($key, $default = false)
     {

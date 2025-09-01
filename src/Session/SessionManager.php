@@ -68,7 +68,7 @@ class SessionManager
     {
         $g = G::instance();
         if (isset($_SESSION) and isset($_SESSION['__start_time'])) {
-            elog('[warn] Session leak detected');
+            //elog'[warn] Session leak detected');
         }
         // This part commented for prevent the session values in multiple requests
         // Due to this un set values are clear all the session values 
@@ -89,8 +89,8 @@ class SessionManager
 
         // This part commented for prevent the session values in multiple requests
         // Due to this un set values are clear all the session values 
-        // session_start();
-
+        session_start();
+        $_SESSION['session_id'] = $sessionId;
         if ($this->useCookies) {
             $cookie = session_get_cookie_params();
             $response->cookie(
@@ -117,13 +117,15 @@ class SessionManager
             $g->zealphp_response = $response;
             call_user_func($this->middleware, $request, $response);
         } finally {
-            elog('SessionManager:: session_write_close took ' . get_current_render_time(), 'info');
+            //elog'SessionManager:: session_write_close took ' . get_current_render_time(), 'info');
+            $handler->open('/var/lib/php/sessions', $sessionName);
+            // $handler->write($sessionId, serialize($_SESSION));
             session_write_close();
             session_id('');
             // This part commented for prevent the session values in multiple requests
             // Due to this un set values are clear all the session values 
-            // $_SESSION = [];
-            // unset($_SESSION);
+            $_SESSION = [];
+            unset($_SESSION);
         }
     }
 }

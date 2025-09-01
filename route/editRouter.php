@@ -16,7 +16,7 @@ $app->route('/tasks/update/{taskId}', ['methods' => ['POST']], function ($taskId
         $isValidUser = $userId ? $authService->validateUserOwnership($userId) : false;
 
         if (!$isValidUser) {
-            elog("Unauthorized access attempt by user ID: $userId", "error");
+            //elog"Unauthorized access attempt by user ID: $userId", "error");
             http_response_code(403);
             echo json_encode(['error' => 'Unauthorized']);
             return;
@@ -90,7 +90,7 @@ $app->route('/tasks/update/{taskId}', ['methods' => ['POST']], function ($taskId
         }
 
     } catch (\Exception $e) {
-        elog("Task update error: " . $e->getMessage(), "error");
+        //elog"Task update error: " . $e->getMessage(), "error");
         ?>
         <script>
             alert('Error: <?= $e->getMessage() ?>');
@@ -109,7 +109,7 @@ $app->route('/tasks/{taskId}/edit', ['methods' => ['GET']], function ($taskId) {
         $isValidUser = $userId ? $authService->validateUserOwnership($userId) : false;
 
         if (!$isValidUser) {
-            elog("Unauthorized access attempt by user ID: $userId", "error");
+            //elog"Unauthorized access attempt by user ID: $userId", "error");
             http_response_code(403);
             echo json_encode(['error' => 'Unauthorized']);
             return;
@@ -117,12 +117,12 @@ $app->route('/tasks/{taskId}/edit', ['methods' => ['GET']], function ($taskId) {
         $taskModel = new TaskService();
         $task = $taskModel->getTask($taskId, $userId);
         if (!$task) {
-            elog('No tasks found for user ID ' . $userId, 'info : TaskService getAllTasks');
+            //elog'No tasks found for user ID ' . $userId, 'info : TaskService getAllTasks');
             throw new Exception('Task not found for User ID : ' . $userId);
         }
         App::render('/tasks/editPage', ['task' => $task]);
     } catch (\Exception $e) {
-        elog("Error fetching task for edit: " . $e->getMessage(), "Exception");
+        //elog"Error fetching task for edit: " . $e->getMessage(), "Exception");
         header('Location: /tasks');
         exit;
     }

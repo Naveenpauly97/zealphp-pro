@@ -25,7 +25,7 @@ function prefork_request_handler($taskLogic, $wait = true)
         stream_wrapper_unregister("php");
         stream_wrapper_register("php", \ZealPHP\IOStreamWrapper::class);
         $g = G::instance();
-        elog("prefork_request_handler enter response_header_list: ".var_export($g->response_headers_list, true));
+        //elog"prefork_request_handler enter response_header_list: ".var_export($g->response_headers_list, true));
         try {
             $g->response_headers_list = [];
             $g->status = 200;
@@ -390,7 +390,7 @@ function access_log($status = 200, $length){
     $user_agent = $g->server['HTTP_USER_AGENT'] ?? '-';
     $log = "$remote - - [$time] \"$request\" $status $length \"$referer\" \"$user_agent\"\n";
     // file_put_contents('/var/log/zealphp/access.log', $log, FILE_APPEND);
-    error_log($log);
+    // error_log($log);
 }
 
 /**

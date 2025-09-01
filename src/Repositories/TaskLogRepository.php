@@ -15,7 +15,7 @@ class TaskLogRepository
 
     public function __construct()
     {
-        $this->db = Connection::getInstance();
+        $this->db = Connection::getMySQL();
     }
 
     public function query(string $sql, array $params = []): \PDOStatement
@@ -27,7 +27,7 @@ class TaskLogRepository
 
     public function insert(string $table, array $data): int
     {
-        elog("Inserting Task table: {$table} with id : " . ($data['id'] ?? 'N/A'), "debug");
+        //elog"Inserting Task table: {$table} with id : " . ($data['id'] ?? 'N/A'), "debug");
         $columns = implode(', ', array_keys($data));
         $placeholders = ':' . implode(', :', array_keys($data));
 

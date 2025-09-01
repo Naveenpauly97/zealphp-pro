@@ -124,12 +124,12 @@
             <div class="form-group">
                 <label for="username">Username or Email</label>
                 <input type="text" id="username" name="username" required 
-                       value="<?= htmlspecialchars($_POST['username'] ?? '') ?>">
+                       value="<?= htmlspecialchars($_POST['username'] ?? 'admin') ?>">
             </div>
 
             <div class="form-group">
                 <label for="password">Password</label>
-                <input type="password" id="password" name="password" required>
+                <input type="password" id="password" value="Naveen@1234" name="password" required>
             </div>
 
             <button type="submit" class="btn">Sign In</button>

@@ -9,7 +9,7 @@ $sessleak = function(){
     $_POST['name'] = 'John Doe';
     go(function() use ($channel){
         $_SESSION['test'] = 'test';
-        elog("Session leak started, inside coroutine, waiting for 10 seconds to check if _SESSION gets overwritten. Now bombard the server with requests...", "test");
+        //elog"Session leak started, inside coroutine, waiting for 10 seconds to check if _SESSION gets overwritten. Now bombard the server with requests...", "test");
         co::sleep(2);
         $_SESSION['test'];
         co::sleep(2);
@@ -25,7 +25,7 @@ $sessleak = function(){
 
     go(function() use ($channel){
         $_SESSION['test'] = 'test';
-        elog("Session leak started, inside coroutine, waiting for 10 seconds to check if _SESSION gets overwritten. Now bombard the server with requests...", "test");
+        //elog"Session leak started, inside coroutine, waiting for 10 seconds to check if _SESSION gets overwritten. Now bombard the server with requests...", "test");
         co::sleep(2);
         $_SESSION['test'];
         co::sleep(2);
@@ -41,7 +41,7 @@ $sessleak = function(){
 
     go(function() use ($channel){
         $_SESSION['test'] = 'test';
-        elog("Session leak started, inside coroutine, waiting for 10 seconds to check if _SESSION gets overwritten. Now bombard the server with requests...", "test");
+        //elog"Session leak started, inside coroutine, waiting for 10 seconds to check if _SESSION gets overwritten. Now bombard the server with requests...", "test");
         co::sleep(2);
         $_SESSION['test'];
         co::sleep(2);
@@ -57,7 +57,7 @@ $sessleak = function(){
 
     go(function() use ($channel){
         $_SESSION['test'] = 'test';
-        elog("Session leak started, inside coroutine, waiting for 10 seconds to check if _SESSION gets overwritten. Now bombard the server with requests...", "test");
+        //elog"Session leak started, inside coroutine, waiting for 10 seconds to check if _SESSION gets overwritten. Now bombard the server with requests...", "test");
         co::sleep(2);
         $_SESSION['test'];
         co::sleep(2);
@@ -73,7 +73,7 @@ $sessleak = function(){
 
     go(function() use ($channel){
         $_SESSION['test'] = 'test';
-        elog("Session leak started, inside coroutine, waiting for 10 seconds to check if _SESSION gets overwritten. Now bombard the server with requests...", "test");
+        //elog"Session leak started, inside coroutine, waiting for 10 seconds to check if _SESSION gets overwritten. Now bombard the server with requests...", "test");
         co::sleep(2);
         $_SESSION['test'];
         co::sleep(2);

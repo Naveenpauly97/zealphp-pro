@@ -1,4 +1,3 @@
-<!-- Main Container -->
 <div class="container">
     <!-- Stats -->
     <div class="stats-grid">
@@ -26,15 +25,16 @@
 
     <!-- Actions and Filters -->
     <div class="actions">
-        <a href="/tasks/create" class="btn btn-primary">+ Create New Task</a>
+        <a onclick="TaskHandler.createCard()" class="btn btn-primary">Create New Task</a>
 
         <div class="filters">
-            <a href="/tasks" class="btn <?= empty($current_status) ? 'btn-primary' : 'btn-secondary' ?>">All</a>
-            <a href="/tasks?status=pending"
+            <a onclick="TaskHandler.getByStatus('all')" id="all"
+                class="btn <?= empty($current_status) || $current_status === 'all' ? 'btn-primary' : 'btn-secondary' ?>">All</a>
+            <a onclick="TaskHandler.getByStatus('pending')" id="pending"
                 class="btn <?= $current_status === 'pending' ? 'btn-primary' : 'btn-secondary' ?>">Pending</a>
-            <a href="/tasks?status=in_progress"
+            <a onclick="TaskHandler.getByStatus('in_progress')" id="in_progress"
                 class="btn <?= $current_status === 'in_progress' ? 'btn-primary' : 'btn-secondary' ?>">In Progress</a>
-            <a href="/tasks?status=completed"
+            <a onclick="TaskHandler.getByStatus('completed')" id="completed"
                 class="btn <?= $current_status === 'completed' ? 'btn-primary' : 'btn-secondary' ?>">Completed</a>
         </div>
     </div>
@@ -45,8 +45,8 @@
             <div class="empty-state">
                 <h3>No tasks found</h3>
                 <p>Create your first task to get started!</p>
-                <a href="/tasks/create" class="btn btn-primary" style="margin-top: 1rem; display: inline-block;">Create
-                    Task</a>
+                <a onclick="TaskHandler.createCard()" class="btn btn-primary"
+                    style="margin-top: 1rem; display: inline-block;">Create Task</a>
             </div>
         <?php else: ?>
             <?php foreach ($tasks as $task): ?>
@@ -72,11 +72,13 @@
                     <?php endif; ?>
 
                     <div class="task-actions">
-                        <a href="/tasks/<?= $task->id ?>/edit" class="btn btn-secondary">Edit</a>
+                        <a onclick="TaskHandler.editTask(<?= $task->id ?>)" class="btn btn-secondary">Edit</a>
                         <?php if (!$task->isCompleted()): ?>
-                            <button onclick="markCompleted(<?= $task->id ?>)" class="btn btn-primary">Mark Complete</button>
+                            <button onclick="TaskHandler.markComplete(<?= $task->id ?>)" class="btn btn-primary">Mark
+                                Complete</button>
                         <?php endif; ?>
-                        <button onclick="deleteTask(<?= $task->id ?>)" class="btn btn-danger">Delete</button>
+                        <!-- <button onclick="deleteTask(<?= $task->id ?>)" class="btn btn-danger">Delete</button> -->
+                        <button onclick="TaskHandler.deleteById(<?= $task->id ?>)" class="btn btn-danger">Delete</button>
                     </div>
                 </div>
             <?php endforeach; ?>

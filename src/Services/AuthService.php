@@ -6,6 +6,7 @@ use ZealPHP\Models\User;
 use ZealPHP\Repositories\UserRepository;
 use ZealPHP\G;
 use ZealPHP\Session;
+use ZealPHP\WebSocket\TaskWebSocketHandler;
 
 use function ZealPHP\elog;
 
@@ -29,11 +30,11 @@ class AuthService
         if ($user && $user->verifyPassword($password)) {
             $this->setUserSession($user);
             Session::set('user', $user->toArray());
-            elog("User logged in: " . $user->username);
+            //elog"User logged in: " . $user->username);
             return $user;
         }
 
-        elog("Failed login attempt for: $username", "warning");
+        //elog"Failed login attempt for: $username", "warning");
         return null;
     }
 
@@ -46,18 +47,18 @@ class AuthService
 
         // Check if user already exists
         if ($this->userRepository->usernameExists($userData['username'])) {
-            elog("Registration failed: Username already exists - " . $userData['username'], "warning");
+            //elog"Registration failed: Username already exists - " . $userData['username'], "warning");
             return null;
         }
 
         if ($this->userRepository->emailExists($userData['email'])) {
-            elog("Registration failed: Email already exists - " . $userData['email'], "warning");
+            //elog"Registration failed: Email already exists - " . $userData['email'], "warning");
             return null;
         }
 
         // Validate password strength
         if (strlen($userData['password']) < 6) {
-            elog("Registration failed: Password too short", "warning");
+            //elog"Registration failed: Password too short", "warning");
             return null;
         }
 
@@ -65,7 +66,7 @@ class AuthService
 
         if ($user) {
             $this->setUserSession($user);
-            elog("User registered: " . $user->username);
+            //elog"User registered: " . $user->username);
         }
 
         return $user;
@@ -76,7 +77,9 @@ class AuthService
         $g = G::instance();
         unset($g->session['user_id']);
         unset($g->session['user']);
-        elog("User logged out");
+        //elog"User logged out");
+        // TODO: HAndle this write with USerSession impl as common
+        TaskWebSocketHandler::writeSession($g->session['session_id']??'',$g->session);
     }
 
     public function getCurrentUser(): ?User
@@ -125,6 +128,8 @@ class AuthService
         $g = G::instance();
         $g->session['user_id'] = $user->id;
         $g->session['user'] = $user->toArray();
+        // TODO: HAndle this write with USerSession impl as common
+        TaskWebSocketHandler::writeSession($g->session['session_id']??'',$g->session);
     }
 
     public function validateUserOwnership(int $userId): bool

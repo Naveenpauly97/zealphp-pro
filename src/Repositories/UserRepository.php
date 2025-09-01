@@ -13,7 +13,7 @@ class UserRepository
 
     public function __construct()
     {
-        $this->db = Connection::getInstance();
+        $this->db = Connection::getMySQL();
     }
 
     public function findById(int $id): ?User
@@ -58,11 +58,11 @@ class UserRepository
 
             if ($result) {
                 $id = $this->db->lastInsertId();
-                elog("User created with ID: $id");
+                //elog"User created with ID: $id");
                 return $this->findById((int)$id);
             }
         } catch (\PDOException $e) {
-            elog("Failed to create user: " . $e->getMessage(), "error");
+            //elog"Failed to create user: " . $e->getMessage(), "error");
         }
 
         return null;
@@ -82,11 +82,11 @@ class UserRepository
 
             if ($result) {
                 $id = $this->db->lastInsertId();
-                elog("User Session created with ID: $id");
+                //elog"User Session created with ID: $id");
                 return $this->findById((int)$id);
             }
         } catch (\PDOException $e) {
-            elog("Failed to create user session: " . $e->getMessage(), "error");
+            //elog"Failed to create user session: " . $e->getMessage(), "error");
         }
 
         return null;
@@ -120,7 +120,7 @@ class UserRepository
             $stmt = $this->db->prepare($sql);
             return $stmt->execute($values);
         } catch (\PDOException $e) {
-            elog("Failed to update user: " . $e->getMessage(), "error");
+            //elog"Failed to update user: " . $e->getMessage(), "error");
             return false;
         }
     }
@@ -131,7 +131,7 @@ class UserRepository
             $stmt = $this->db->prepare('DELETE FROM users WHERE id = ?');
             return $stmt->execute([$id]);
         } catch (\PDOException $e) {
-            elog("Failed to delete user: " . $e->getMessage(), "error");
+            //elog"Failed to delete user: " . $e->getMessage(), "error");
             return false;
         }
     }

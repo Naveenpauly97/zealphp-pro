@@ -4,6 +4,7 @@ namespace ZealPHP\Repositories;
 
 use PDO;
 use ZealPHP\Database\Connection;
+use ZealPHP\Database\Traits\PPARepositoryTrait;
 use ZealPHP\Models\Task;
 use ZealPHP\Services\TaskLogService;
 use ZealPHP\Session;
@@ -12,14 +13,16 @@ use function ZealPHP\elog;
 
 class TaskRepository
 {
+    use PPARepositoryTrait;
     private PDO $db;
-
     private TaskLogService $taskLogService;
-
     public function __construct()
     {
-        $this->db = Connection::getInstance();
+        $this->db = Connection::getMySQL();
         $this->taskLogService = new TaskLogService();
+        $this->setDbConnection($this->db);
+        $this->setTableName('tasks');
+        $this->setPrimaryKey('id');
     }
 
     public function findById(int $id): ?Task
@@ -66,7 +69,9 @@ class TaskRepository
 
     public function getTasksByStatus(int $userId, string $status): array
     {
-        return $this->findByUserId($userId, ['status' => $status]);
+        elog("Fetching tasks for user ID: {$userId} with status: {$status}", 'debug');
+        $task = $this->findByUserIdAndStatus($userId, $status);
+        return Task::builder($task);
     }
 
     public function getOverdueTasks(int $userId): array
@@ -121,7 +126,7 @@ class TaskRepository
     }
     public function insert(string $table, array $data): int
     {
-        elog("Inserting Task table: {$table} with id : " . ($data['id'] ?? 'N/A'), "debug");
+        //elog"Inserting Task table: {$table} with id : " . ($data['id'] ?? 'N/A'), "debug");
         $columns = implode(', ', array_keys($data));
         $placeholders = ':' . implode(', :', array_keys($data));
 
@@ -132,7 +137,7 @@ class TaskRepository
         if ($insertedId > 0) {
             try {
                 //TODO: Need to implemet Code reusability for logging
-                elog("Task inserted with ID: {$insertedId}", "debug");
+                //elog"Task inserted with ID: {$insertedId}", "debug");
 
                 $newValues = json_encode($this->findById($insertedId));
                 $logData = [
@@ -142,9 +147,9 @@ class TaskRepository
                     'new_values' => $newValues
                 ];
                 $this->taskLogService->create($logData);
-                elog("Task log created for deletion of task ID: " . $insertedId, "debug");
+                //elog"Task log created for deletion of task ID: " . $insertedId, "debug");
             } catch (\Exception $e) {
-                elog("Error creating task log for insertion: " . $e->getMessage(), "error");
+                //elog"Error creating task log for insertion: " . $e->getMessage(), "error");
             }
             return $insertedId;
         }
@@ -153,7 +158,7 @@ class TaskRepository
 
     public function update(string $table, array $data, array $where): bool
     {
-        elog("Updating Task table: {$table} with id : " . $where['id'], "debug");
+        //elog"Updating Task table: {$table} with id : " . $where['id'], "debug");
         $oldValues = json_encode($this->findById($where['id']));
 
         $setClause = implode(', ', array_map(fn($key) => "{$key} = :{$key}", array_keys($data)));
@@ -169,7 +174,7 @@ class TaskRepository
         $stmt = $this->query($sql, $params);
 
         if ($stmt->rowCount() > 0) {
-            elog("Updated Task data table: {$table} with id : " . $where['id'], "debug");
+            //elog"Updated Task data table: {$table} with id : " . $where['id'], "debug");
             try {
                 $newValues = json_encode($this->findById($where['id']));
                 $logData = [
@@ -180,9 +185,9 @@ class TaskRepository
                     'old_values' => $oldValues
                 ];
                 $this->taskLogService->create($logData);
-                elog("Task log created for updation of task ID: " . $where['id'], "debug");
+                //elog"Task log created for updation of task ID: " . $where['id'], "debug");
             } catch (\Exception $e) {
-                elog("Error creating task log for updation: " . $e->getMessage(), "error");
+                //elog"Error creating task log for updation: " . $e->getMessage(), "error");
             }
             return true;
         }
@@ -193,12 +198,12 @@ class TaskRepository
 
     public function delete(string $table, array $where): bool
     {
-        elog("Deleting Task table: {$table} with id : " . $where['id'], "debug");
+        //elog"Deleting Task table: {$table} with id : " . $where['id'], "debug");
         $whereClause = implode(' AND ', array_map(fn($key) => "{$key} = :{$key}", array_keys($where)));
         $oldValues = json_encode($this->findById($where['id']));
         $sql = "DELETE FROM {$table} WHERE {$whereClause}";
         $stmt = $this->query($sql, $where);
-        elog("Deleted Task table: {$table} with id : " . $where['id'], "debug");
+        //elog"Deleted Task table: {$table} with id : " . $where['id'], "debug");
         if ($stmt->rowCount() > 0) {
             try {
                 $logData = [
@@ -208,9 +213,9 @@ class TaskRepository
                     'old_values' => $oldValues
                 ];
                 $this->taskLogService->create($logData);
-                elog("Task log created for deletion of task ID: " . $where['id'], "debug");
+                //elog"Task log created for deletion of task ID: " . $where['id'], "debug");
             } catch (\Exception $e) {
-                elog("Error creating task log for deletion: " . $e->getMessage(), "error");
+                //elog"Error creating task log for deletion: " . $e->getMessage(), "error");
             }
             return true;
         }

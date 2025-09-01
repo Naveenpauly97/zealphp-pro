@@ -104,7 +104,7 @@ class App
         if (self::$instance == null) {
             self::$instance = new App($host, $port, $cwd);
         } else {
-            elog("App already initialized", "warn");
+            //elog"App already initialized", "warn");
         }
         return self::$instance;
     }
@@ -443,7 +443,7 @@ class App
 
         $route_files = glob(self::$cwd."/route/*.php");
         foreach ($route_files as $route_file) {
-            elog("Including route file 1: ".str_replace(App::$cwd, '', $route_file));
+            //elog"Including route file 1: ".str_replace(App::$cwd, '', $route_file));
             include $route_file;
         }
 
@@ -579,7 +579,7 @@ class App
             'methods' => ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH']
         ], function($dir, $uri, $response){
             $g = G::instance();
-            elog("Directory: $dir, URI: $uri");
+            //elog"Directory: $dir, URI: $uri");
             # if uri ends with .php remove it
             if (substr($uri, -4) == '.php') {
                 $uri = substr($uri, 0, -4);
@@ -648,10 +648,10 @@ class App
                 unset($$_func);
             } else {
                 # TODO: Should throw exception?
-                elog("Task handler not found: $handler", "error");
+                //elog"Task handler not found: $handler", "error");
                 $result = false;
             }
-            elog(json_encode([$data, $result]), "task");
+            //elogjson_encode([$data, $result]), "task");
             return [
                 'task' => $data,
                 'result' => $result
@@ -659,13 +659,13 @@ class App
         });
 
         $server->on('finish', function ($server, $task_id, $data) {
-            elog(json_encode($data), "task_task");
+            //elogjson_encode($data), "task_task");
         });
 
         $SessionManager = self::$superglobals ?  'ZealPHP\Session\SessionManager' : 'ZealPHP\Session\CoSessionManager';
 
         foreach (array_reverse(self::$middleware_wait_stack) as $middleware) {
-            elog("Registering middleware: ".get_class($middleware));
+            //elog"Registering middleware: ".get_class($middleware));
             self::$middleware_stack = self::$middleware_stack->add($middleware);
         }
 
@@ -747,7 +747,7 @@ class App
                 $response->flush();
                 \OpenSwoole\Core\Psr\Response::emit($response->parent, $serverResponse->withHeader('X-Powered-By', 'ZealPHP + OpenSwoole'));
             } catch (\Throwable|\OpenSwoole\ExitException $e) {
-                elog(jTraceEx($e), "error");
+                //elogjTraceEx($e), "error");
                 $response->parent->status(500);                    
                 if (App::$display_errors) {
                     $g->status = 500;
@@ -759,7 +759,7 @@ class App
             }
         }));
 
-        elog("ZealPHP server running at http://{$this->host}:{$this->port} with ".count($this->routes)." routes");
+        //elog"ZealPHP server running at http://{$this->host}:{$this->port} with ".count($this->routes)." routes");
         $server->start();
     }
 
@@ -827,7 +827,7 @@ class ResponseMiddleware implements MiddlewareInterface
                         ob_end_clean();
                         $body = $object->getBody();
                         $body->rewind();
-                        elog("ResponseMiddleware process() received ResponseInterface > ".$body->getContents());
+                        //elog"ResponseMiddleware process() received ResponseInterface > ".$body->getContents());
                         return $object;
                     }
 
@@ -843,13 +843,13 @@ class ResponseMiddleware implements MiddlewareInterface
                 } catch (\Throwable|\OpenSwoole\ExitException $e) {
                     if($e instanceof \OpenSwoole\ExitException){
                         if($e->getStatus() == 0){
-                            elog("HTTP Status: ".$g->status);
+                            //elog"HTTP Status: ".$g->status);
                             return (new Response(ob_get_clean()))->withStatus($g->status ?? 200);
                         } else {
                             return (new Response(ob_get_clean()))->withStatus(500);
                         }
                     }
-                    elog(jTraceEx($e), "error");
+                    //elogjTraceEx($e), "error");
                     if (App::$display_errors) {
                         // print the error message to the error log
                         return (new Response("<pre>".jTraceEx($e)."</pre>"))->withStatus(500);

@@ -13,7 +13,7 @@ $update = function () {
         $isValidUser = $userId ? $authService->validateUserOwnership($userId) : false;
 
         if (!$isValidUser) {
-            elog("Unauthorized access attempt by user ID: $userId", "error");
+            //elog"Unauthorized access attempt by user ID: $userId", "error");
             http_response_code(403);
             echo json_encode(['error' => 'Unauthorized']);
             return;
@@ -108,7 +108,7 @@ $update = function () {
         }
 
     } catch (\Exception $e) {
-        elog("Task update error: " . $e->getMessage(), "error");
+        //elog"Task update error: " . $e->getMessage(), "error");
         $this->response($this->json([
             'success' => false,
             'message' => $e->getMessage()

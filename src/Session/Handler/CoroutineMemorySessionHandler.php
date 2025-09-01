@@ -18,7 +18,7 @@ class CoroutineMemorySessionHandler implements \SessionHandlerInterface
     // Read session data
     public function read($sessionId): string
     {
-        elog('SessionHandler::read');
+        //elog'SessionHandler::read');
         $cid = co::getCid();
 
         if (isset($this->sessions[$cid][$sessionId])) {

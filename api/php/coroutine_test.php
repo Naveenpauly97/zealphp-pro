@@ -17,7 +17,7 @@ $coroutine_test = function(){
     // Spawn a coroutine for each URL
     foreach ($urls as $url) {
         go(function () use ($url, $channel) {
-            elog("Fetching {$url}");
+            //elog"Fetching {$url}");
 
             $data = file_get_contents($url);
             // Push the result to the channel

@@ -58,14 +58,14 @@ class IOStreamWrapper {
     // }
 
     public function stream_open($path, $mode, $options, &$opened_path) {
-        elog("stream_open: $path, $mode, $options", "streamio");
+        //elog"stream_open: $path, $mode, $options", "streamio");
         // Handle php://input specifically: load content into an in-memory stream
         if ($path === 'php://input') {
             $g = \ZealPHP\G::instance();
             $content = $g->zealphp_request->parent->getContent();
             $stream = fopen('php://memory', 'r+');
             if ($stream === false) {
-                elog("Failed to open php://memory for php://input");
+                //elog"Failed to open php://memory for php://input");
                 return false;
             }
             fwrite($stream, $content);
@@ -84,7 +84,7 @@ class IOStreamWrapper {
             $this->context = $handle;
             return true;
         }
-        elog("Failed to open stream: $path");
+        //elog"Failed to open stream: $path");
         return false; // Fail if the original stream couldn't open
     }
     

@@ -4,7 +4,7 @@ use ZealPHP\App;
 
 <!DOCTYPE html>
 <html lang="en">
-<? App::render('/tasks/_head', ['title' => $title, 'page' => 'createPage']);
+<? App::render('/common/ui/_head', ['title' => $title??'Create pagTAsk', 'page' => 'createPage']);
 ?>
 
 <body>

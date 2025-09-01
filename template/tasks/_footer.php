@@ -1,45 +1,15 @@
 <!-- Footer Java script Section -->
-<script>
-    function markCompleted(taskId) {
-        fetch(`/api/tasks/update?id=${taskId}`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ status: 'completed' })
-        })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    location.reload();
-                } else {
-                    alert('Failed to update task');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Failed to update task');
-            });
-    }
+<!-- Footer Java script Section -->
+<!-- <script type="module" src="/module/Socket.js"></script> -->
 
-    function deleteTask(taskId) {
-        fetch(`/api/tasks/delete?id=${taskId}`, {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json',
-            }
-        })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    location.reload();
-                } else {
-                    alert('Failed to delete task');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Failed to delete task');
-            });
-    }
+<!-- <script type="module" src="/wsscript/main"></script>
+<script type="module" src="/wsscript/Tasks/TaskHandler"></script> -->
+
+<script>
+//     window.addEventListener('error', function (event) {
+//     if (event.message && event.message.includes('TaskHandler is not defined')) {
+//         console.warn('TaskHandler missing, reloading page...');
+//         location.reload();
+//     }
+// });
 </script>

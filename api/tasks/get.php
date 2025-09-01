@@ -4,10 +4,11 @@ use ZealPHP\Services\AuthService;
 use ZealPHP\Services\TaskService;
 use function ZealPHP\elog;
 use ZealPHP\G;
+use ZealPHP\WebSocket\TaskWebSocketHandler;
 
 $get = function () {
 
-    elog('Fetching task details', 'info : TaskService getAllTasks');
+    //elog'Fetching task details', 'info : TaskService getAllTasks');
     try {
         $g = G::instance();
         $taskId = (int) ($g->get['id'] ?? 0);
@@ -17,7 +18,7 @@ $get = function () {
         $isValidUser = $userId ? $authService->validateUserOwnership($userId) : false;
 
         if (!$isValidUser) {
-            elog("Unauthorized access attempt by user ID: $userId", "error");
+            //elog"Unauthorized access attempt by user ID: $userId", "error");
             http_response_code(403);
             echo json_encode(['error' => 'Unauthorized']);
             return;
@@ -43,13 +44,18 @@ $get = function () {
             return;
         }
 
+        // TODO : Need to remve the session data from the response
+        $sessionData = TaskWebSocketHandler::getSession(session_id());
+
         $this->response($this->json([
             'success' => true,
-            'data' => $task
+            'data' => $task,
+            'session id' => session_id(),
+            'session' => $sessionData, // Include session data if needed
         ]), 200);
 
     } catch (\Exception $e) {
-        elog('Error fetching task: ' . $e->getMessage(), 'error : TaskService getAllTasks');
+        //elog'Error fetching task: ' . $e->getMessage(), 'error : TaskService getAllTasks');
         $this->response($this->json([
             'success' => false,
             'message' => $e->getMessage()

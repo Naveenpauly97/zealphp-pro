@@ -14,13 +14,15 @@ $app->route('/tasks/create/{userId}', ['methods' => ['POST']], function ($userId
         $isValidUser = $userId ? $authService->validateUserOwnership($userId) : false;
 
         if (!$isValidUser) {
-            elog("Unauthorized access attempt by user ID: $userId", "error");
+            //elog"Unauthorized access attempt by user ID: $userId", "error");
             http_response_code(403);
             echo json_encode(['error' => 'Unauthorized']);
             return;
         }
 
         $input = json_decode(file_get_contents('php://input'), true);
+
+        elog($input); // Debugging line to print the input data
 
         if (!$input) {
             $input = $_POST; // Fallback to POST data if JSON is not provided
@@ -59,7 +61,7 @@ $app->route('/tasks/create/{userId}', ['methods' => ['POST']], function ($userId
         }
 
     } catch (\Exception $e) {
-        elog("Task creation error: " . $e->getMessage(), "error");
+        //elog"Task creation error: " . $e->getMessage(), "error");
         header('Location: /tasks');
         exit;
     }
@@ -72,11 +74,11 @@ $app->route('/tasks/create', ['methods' => ['GET']], function () {
     $isValidUser = $user->id ? $authService->validateUserOwnership($user->id) : false;
 
     if (!$isValidUser) {
-        elog("Unauthorized access attempt by user ID: $user->id", "error");
+        //elog"Unauthorized access attempt by user ID: $user->id", "error");
         http_response_code(403);
         echo json_encode(['error' => 'Unauthorized']);
         return;
     }
-    elog("Rendering create task page");
+    //elog"Rendering create task page");
     App::render('/tasks/createPage', ['user' => $user]);
 });

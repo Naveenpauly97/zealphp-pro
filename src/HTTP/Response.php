@@ -28,7 +28,7 @@ class Response
     // Magic method to get properties from the parent
     public function &__get($name)
     {
-        \ZealPHP\elog($name);
+        // \ZealPHP\elog($name);
 
         if (property_exists($this->parent, $name)) {
             return $this->parent->$name;
@@ -43,7 +43,7 @@ class Response
     // Magic method to set properties on the parent
     public function __set($name, $value)
     {
-        \ZealPHP\elog($name);
+        // \ZealPHP\elog($name);
         if($name == 'parent'){
             $this->parent = $value;
             return;

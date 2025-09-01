@@ -1,7 +1,7 @@
 <?
 use function ZealPHP\elog;
 $fork = function(){
-    elog("Forking");
+    //elog"Forking");
     echo "Forking\n";
     // Check if pcntl extension is available
     if (!function_exists('pcntl_fork')) {
@@ -52,7 +52,7 @@ $fork = function(){
         // exit(0);
     } else {
         // Parent process
-        elog("Parent process");
+        //elog"Parent process");
         echo "Parent process\n";
         // Open the FIFOs for reading
         $stdout = fopen($stdoutFifo, 'r');

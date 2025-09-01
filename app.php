@@ -24,7 +24,7 @@ class AuthenticationMiddleware implements MiddlewareInterface
 {
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        elog("AuthenticationMiddleware: process()");
+        //elog"AuthenticationMiddleware: process()");
         $g = G::instance();
         $g->session['test'] = 'test';
         return $handler->handle($request);
@@ -36,7 +36,7 @@ class ValidationMiddleware implements MiddlewareInterface
 {
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        elog("Validation: process()");
+        //elog"Validation: process()");
         $g = G::instance();
         ob_start();
         print_r($request->getQueryParams());
@@ -51,23 +51,23 @@ class AuthMiddleware implements MiddlewareInterface
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
 
-        elog("AuthMiddleware: process()");
+        //elog"AuthMiddleware: process()");
         $authService = new AuthService();
         $g = G::instance();
         $uri = $g->server['REQUEST_URI'];
 
         $publicRoutes = ['/login', '/register', '/api/auth/login', '/api/auth/register', '/about'];
-        
+
         foreach ($publicRoutes as $route) {
-            elog("AuthMiddleware: process() foreeach iterate URI: ". $route);
+            //elog"AuthMiddleware: process() foreeach iterate URI: ". $route);
             if (strpos($uri, $route) === 0) {
-                elog("AuthMiddleware: process() foreach contiotion -------------- URI: ". $uri);
+                //elog"AuthMiddleware: process() foreach contiotion -------------- URI: ". $uri);
                 return $handler->handle($request);
             }
         }
-         // Check if user is authenticated
+        // Check if user is authenticated
         if (!$authService->isAuthenticated()) {
-            elog("AuthMiddleware: process() isAuthenticated contiotion start -------------- URI: ");
+            //elog"AuthMiddleware: process() isAuthenticated contiotion start -------------- URI: ");
             // For API routes, return JSON error
             if (strpos($uri, '/api/') === 0) {
                 return new Response(
@@ -77,9 +77,18 @@ class AuthMiddleware implements MiddlewareInterface
                     ['Content-Type' => 'application/json']
                 );
             }
-            
+
+            if (strpos($uri, '/wsscript') === 0) {
+                return new Response(
+                    json_encode(['error' => 'Authentication required']),
+                    401,
+                    'Unauthorized',
+                    ['Content-Type' => 'application/javascript']
+                );
+            }
+
             // For web routes, redirect to login
-            elog("AuthMiddleware: process() isAuthenticated contiotion end-------------- URI: ");
+            //elog"AuthMiddleware: process() isAuthenticated contiotion end-------------- URI: ");
             return new Response(
                 '',
                 302,
@@ -88,7 +97,7 @@ class AuthMiddleware implements MiddlewareInterface
             );
         }
            
-        elog("AuthMiddleware: process() end-------------- URI: ");
+        //elog"AuthMiddleware: process() end-------------- URI: ");
         return $handler->handle($request);
 
     }
@@ -96,6 +105,7 @@ class AuthMiddleware implements MiddlewareInterface
 
 App::superglobals(true);
 
+Connection::loadEnv();
 $dbConfig = require __DIR__ . '/config/database.php';
 Connection::init($dbConfig);
 
@@ -103,7 +113,7 @@ $app = App::init('0.0.0.0', 8080);
 $app->addMiddleware(new AuthenticationMiddleware());
 $app->addMiddleware(new ValidationMiddleware());
 $app->addMiddleware(new AuthMiddleware());
-elog("Middleware added");
+//elog"Middleware added");
 # Route for /phpinfo 
 $app->route('/phpinfo', function() {
     //Loads template from app/phpinfo.php since PHP_SELF is /app.php
@@ -129,7 +139,7 @@ $app->route('/stream_test',[
         fseek($stream, 0);
     }
     $data = stream_get_contents($stream);
-    elog("Stream Data: $data");
+    //elog"Stream Data: $data");
     // Step 1: Base64 Encoding
     $stream = fopen('php://memory', 'w+');
     $encodedStream = fopen('php://filter/write=convert.base64-encode/resource=php://memory', 'w+');
@@ -138,7 +148,7 @@ $app->route('/stream_test',[
     $base64Encoded = stream_get_contents($encodedStream);
     fseek($encodedStream, 0);
     fclose($encodedStream);
-    elog("Base64 Encoded:\n$base64Encoded\n");
+    //elog"Base64 Encoded:\n$base64Encoded\n");
 
     // Step 2: Base64 Decoding
     rewind($stream); // Reset the stream position
@@ -147,13 +157,13 @@ $app->route('/stream_test',[
     fwrite($decodedStream, $base64Encoded);
     rewind($decodedStream);
     $decodedData = stream_get_contents($decodedStream);
-    elog("Base64 Decoded:\n$decodedData\n");
+    //elog"Base64 Decoded:\n$decodedData\n");
     // Close the streams
     fclose($stream);
     fclose($decodedStream);
 
     $file = file_get_contents('php://input');
-    elog("php://input file_get_contents(): ".$file);
+    //elog"php://input file_get_contents(): ".$file);
 
     return new Response('Stream Test: '.$file, 200, 'success', ['Content-Type' => 'text/plain']);
 });

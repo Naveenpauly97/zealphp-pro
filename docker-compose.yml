@@ -1,24 +1,6 @@
-version: '3.8'
+version: "3.9"
 
 services:
-  app:
-    build:
-      context: .
-    container_name: zealphp-app
-    working_dir: /app
-    volumes:
-      - .:/app
-    ports:
-      - "8081:8080"
-    depends_on:
-      - db
-    environment:
-      DB_HOST: db
-      DB_PORT: 3306
-      DB_DATABASE: zealphp
-      DB_USERNAME: root
-      DB_PASSWORD: root
-
   db:
     image: mysql:8.0
     container_name: zealphp-db
@@ -28,3 +10,103 @@ services:
       MYSQL_DATABASE: zealphp
     ports:
       - "3307:3306"
+    volumes:
+      - ./DDL/taskddl.sql:/docker-entrypoint-initdb.d/taskddl.sql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    networks:
+      - zealphp-network
+
+  postgres:
+    image: postgres:16
+    container_name: zealphp-pg-db
+    restart: always
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: zealphp-pg
+    ports:
+      - "5433:5432"
+    volumes:
+      - ./DDL/taskddl-pg.sql:/docker-entrypoint-initdb.d/taskddl-pg.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U root -d zealphp-pg"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    networks:
+      - zealphp-network
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: app  # builds the "app" stage
+    container_name: zealphp-app
+    working_dir: /app
+    restart: always
+    networks:
+      - zealphp-network
+    volumes:
+      - .:/app
+      - php-sessions:/var/lib/php/sessions
+    ports:
+      - "8081:8080"
+    command: ["php", "app.php"]
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_DATABASE: zealphp
+      DB_USERNAME: root
+      DB_PASSWORD: root
+    healthcheck:
+      test: ["CMD", "sh", "-c", "lsof -i :8080"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  websocket:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: ws  # builds the "ws" stage
+    container_name: zealphp-app-ws
+    working_dir: /app
+    restart: always
+    networks:
+      - zealphp-network
+    volumes:
+      - .:/app
+      - php-sessions:/var/lib/php/sessions
+    ports:
+      - "9502:9502"
+    command: ["php", "websocket_server.php"]
+    depends_on:
+      db:
+        condition: service_healthy
+      app:
+        condition: service_healthy
+    environment:
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_DATABASE: zealphp
+      DB_USERNAME: root
+      DB_PASSWORD: root
+    healthcheck:
+      test: ["CMD", "sh", "-c", "lsof -i :9502"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+networks:
+  zealphp-network:
+    driver: bridge
+
+volumes:
+  php-sessions:
