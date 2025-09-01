@@ -258,3 +258,9 @@ Task changes are automatically logged to:
 - Database: `task_logs` table
 
 Each log entry includes timestamp, user ID, action type, and before/after values for complete audit trail.
+
+## Main Pages:
+
+/tasks - zealphp tasks main page
+
+/selfpage - new assessment self pages

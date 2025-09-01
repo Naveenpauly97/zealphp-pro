@@ -71,6 +71,12 @@ header {
     cursor: pointer;
 }
 
+.register-top:hover{
+    background-color: #ff6b00;
+    color: #fff;
+    transition: background-color 0.3s, color 0.3s;
+}
+
 /* Hero */
 .hero {
     text-align: center;
