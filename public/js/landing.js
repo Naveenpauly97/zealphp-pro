@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const result = await response.json();
 
             if (response.ok) {
-                window.location.replace('/');
+                // window.location.replace('/');
                 form.reset();
             } else {
                 if (result.errors) {

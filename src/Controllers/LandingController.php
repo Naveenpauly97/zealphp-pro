@@ -126,7 +126,7 @@ class LandingController
     public function contactApi(): array
     {
         $g = G::instance();
-
+        elog('Contact Api initiated');
         if ($g->server['REQUEST_METHOD'] !== 'POST') {
             http_response_code(405);
             return ['success' => false, 'message' => 'Method not allowed'];
@@ -145,7 +145,7 @@ class LandingController
             'message' => trim($input['message'] ?? '')
         ];
         // $headers = \getallheaders();
-        $clientToken = ($input['csrf_token'] ?? null);
+        $clientToken = $input['csrf_token'] ?? null;
 
         elog('Session :' . json_encode($_SESSION));
         elog("Client token: $clientToken");

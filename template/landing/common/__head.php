@@ -4,5 +4,5 @@
     <title>Selfmade Ninja Academy</title>
     <meta name="csrf-token" content="<?= htmlspecialchars($_SESSION['csrf_token'] ?? '') ?>">
     <link rel="stylesheet" href="/css/styles.css" />
-    <!-- <script src="/js/landing.js"></script> -->
+    <script src="/js/landing.js"></script>
 </head>
