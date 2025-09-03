@@ -187,11 +187,16 @@ CREATE TABLE IF NOT EXISTS leads (
    - [ ] Admin dashboard shows leads correctly
 
 4. **API Endpoint**
-   ```bash
+   ```bash Note [csrf_token is generated and in page itself need to replace the actual csrf_token]
    # Test API endpoint with curl
-   curl -X POST http://localhost:8080/api/contact \
-     -H "Content-Type: application/json" \
-     -d '{"name":"Test User","email":"test@example.com","phone":"1234567890","message":"Test message"}'
+      curl --location 'http://localhost:8081/api/contact' \
+      --header 'Content-Type: application/json' \
+      --form 'firstName="kannudd"' \
+      --form 'lastName="Kumardd"' \
+      --form 'email="Naveen1234d@gmail.com"' \
+      --form 'phone="0845715249"' \
+      --form 'message="Hi this is first app"' \
+      --form 'csrf_token="7653db6303f77a964abf1c2d2e8484787a092bc29b6488920fd649a2b14eac32"'
    ```
 
 ## 🔧 Configuration
