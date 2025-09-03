@@ -93,3 +93,27 @@ INSERT IGNORE INTO tasks (user_id, title, description, status, priority, due_dat
 (1, 'Implement Authentication', 'Create user login and registration system', 'in_progress', 'high', '2024-01-20'),
 (1, 'Build Task Management', 'Create CRUD operations for tasks', 'pending', 'medium', '2024-01-25'),
 (2, 'Test the Application', 'Perform comprehensive testing', 'pending', 'low', '2024-01-30');
+
+-- Create leads table for landing page contact form
+-- This table stores lead information from the contact form
+
+CREATE TABLE IF NOT EXISTS leads (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    phone VARCHAR(20) NULL,
+    message TEXT NULL,
+    image TEXT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    INDEX idx_email (email),
+    INDEX idx_created_at (created_at)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Insert sample data for testing
+INSERT IGNORE INTO leads (name, email, phone, message, image, created_at) VALUES
+('John Doe', 'john.doe@example.com', '+1-555-0123', 'Interested in the cybersecurity program. Looking to transition from software development.','https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=120&h=120&dpr=2' , '2025-01-15 10:30:00'),
+('Jane Smith', 'jane.smith@example.com', '+1-555-0124', 'Want to learn more about ethical hacking and penetration testing.', 'https://images.pexels.com/photos/614810/pexels-photo-614810.jpeg?auto=compress&cs=tinysrgb&w=120&h=120&dpr=2', '2025-01-15 14:45:00'),
+('Mike Johnson', 'mike.johnson@example.com', NULL, 'Currently working in IT support, want to move to security.', 'https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=120&h=120&dpr=2', '2025-01-14 09:15:00'),
+('Sarah Wilson', 'sarah.wilson@example.com', '+1-555-0126', 'Fresh graduate looking to start career in cybersecurity.', 'https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=120&h=120&dpr=2', '2025-01-14 16:20:00'),
+('David Brown', 'david.brown@example.com', '+1-555-0127', 'Experienced developer interested in security certifications.', 'https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=120&h=120&dpr=2', '2025-01-13 11:30:00');

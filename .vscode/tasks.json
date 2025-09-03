@@ -1,64 +1,117 @@
 {
+    // See https://code.visualstudio.com/docs/editor/tasks for more information
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "Start ZealPHP Server",
+            "label": "Zealphp up",
             "type": "shell",
-            "command": "php",
-            "args": ["app.php"],
-            "group": {
-                "kind": "build",
-                "isDefault": true
-            },
+            "command": "docker-compose up --build -d",
             "presentation": {
-                "echo": true,
+                "close": true
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Zealphp down",
+            "type": "shell",
+            "command": "docker-compose down",
+            "presentation": {
+                "close": true
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Zealphp-app logs",
+            "type": "shell",
+            "command": "docker logs -f zealphp-app",
+            "presentation": {
+                "close": true,
+                "panel": "new", // Ensures a new panel is created if the group doesn't exist
+                "group": "myTerminalGroup" // Shared group for split terminals
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Zealphp-app-ws logs",
+            "type": "shell",
+            "command": "docker logs -f zealphp-app-ws",
+            "presentation": {
+                "close": true,
+                "panel": "new", // Ensures a new panel is created if the group doesn't exist
+                "group": "myTerminalGroup" // Shared group for split terminals
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Zealphp-db logs",
+            "type": "shell",
+            "command": "docker logs -f zealphp-db",
+            "presentation": {
+                "close": true,
+                "panel": "new", // Ensures a new panel is created if the group doesn't exist
+                "group": "myTerminalGroup" // Shared group for split terminals
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Zealphp restart All",
+            "type": "shell",
+            "command": "docker-compose restart",
+            "presentation": {
+                "close": true
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Zealphp restart App",
+            "type": "shell",
+            "command": "docker-compose restart app",
+            "presentation": {
+                "close": true
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Zealphp restart WS",
+            "type": "shell",
+            "command": "docker-compose restart websocket",
+            "presentation": {
+                "close": true
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Run All Docker Logs", // The compound task
+            "dependsOn": [
+                "Zealphp-app logs",
+                "Zealphp-app-ws logs"
+            ],
+            "presentation": {
                 "reveal": "always",
-                "focus": false,
                 "panel": "new"
             },
-            "problemMatcher": [],
-            "runOptions": {
-                "runOn": "folderOpen"
+            "group": {
+                "kind": "test",
+                "isDefault": true
             }
         },
         {
-            "label": "Stop ZealPHP Server",
+            "label": "Zealphp-app",
             "type": "shell",
-            "command": "pkill",
-            "args": ["-f", "php.*app.php"],
-            "group": "build",
+            "command": "docker exec -it zealphp-app /bin/bash",
             "presentation": {
-                "echo": true,
-                "reveal": "always",
-                "focus": false,
-                "panel": "shared"
-            }
+                "close": true
+            },
+            "problemMatcher": []
         },
         {
-            "label": "Install Dependencies",
+            "label": "Zealphp-app WS",
             "type": "shell",
-            "command": "composer",
-            "args": ["install"],
-            "group": "build",
+            "command": "docker exec -it zealphp-app-ws /bin/bash",
             "presentation": {
-                "echo": true,
-                "reveal": "always",
-                "focus": false,
-                "panel": "shared"
-            }
-        },
-        {
-            "label": "Update Dependencies",
-            "type": "shell",
-            "command": "composer",
-            "args": ["update"],
-            "group": "build",
-            "presentation": {
-                "echo": true,
-                "reveal": "always",
-                "focus": false,
-                "panel": "shared"
-            }
+                "close": true
+            },
+            "problemMatcher": []
         }
     ]
 }

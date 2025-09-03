@@ -263,4 +263,6 @@ Each log entry includes timestamp, user ID, action type, and before/after values
 
 /tasks - zealphp tasks main page
 
-/selfpage - new assessment self pages
+/ - new assessment landing pages
+
+Refer doc - README_LANDING.md

@@ -10,7 +10,7 @@ $app->route('/login', ['methods' => ['GET', 'POST']], function() {
     $authService = new AuthService();
     
     if ($authService->isAuthenticated()) {
-        header('Location: /tasks');
+        header('Location: /');
         exit;
     }
 
@@ -22,7 +22,7 @@ $app->route('/login', ['methods' => ['GET', 'POST']], function() {
             $user = $authService->login($username, $password);
             
             if ($user) {
-                header('Location: /tasks');
+                header('Location: /');
                 exit;
             } else {
                 $error = 'Invalid credentials';
@@ -43,7 +43,7 @@ $app->route('/register', ['methods' => ['GET', 'POST']], function() {
     $authService = new AuthService();
     
     if ($authService->isAuthenticated()) {
-        header('Location: /tasks');
+        header('Location: /');
         exit;
     }
 
@@ -79,7 +79,7 @@ $app->route('/register', ['methods' => ['GET', 'POST']], function() {
             ]);
             
             if ($user) {
-                header('Location: /tasks');
+                header('Location: /');
                 exit;
             } else {
                 $errors[] = 'Registration failed. Username or email may already exist.';
