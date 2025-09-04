@@ -1,10 +1,10 @@
 <?php
 
-namespace ZealPHP\Controllers;
+namespace App\Controllers;
 
+use App\Models\Lead;
 use ZealPHP\App;
 use ZealPHP\G;
-use ZealPHP\Models\Lead;
 use ZealPHP\WebSocket\TaskWebSocketHandler;
 use function ZealPHP\elog;
 

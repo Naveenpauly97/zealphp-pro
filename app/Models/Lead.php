@@ -1,6 +1,6 @@
 <?php
 
-namespace ZealPHP\Models;
+namespace App\Models;
 
 use ZealPHP\Database\Connection;
 use PDO;

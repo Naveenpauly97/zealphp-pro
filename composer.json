@@ -11,7 +11,8 @@
     },
     "autoload": {
         "psr-4": {
-            "ZealPHP\\": "src/"
+            "ZealPHP\\": "src/",
+            "App\\": "app/"
         },
         "files": [
             "src/utils.php",

@@ -26,6 +26,10 @@ class ComposerStaticInit1b6fbb16024c07a28729efcdf1b64e92
         array (
             'OpenSwoole\\Core\\' => 16,
         ),
+        'A' => 
+        array (
+            'App\\' => 4,
+        ),
     );
 
     public static $prefixDirsPsr4 = array (
@@ -35,8 +39,8 @@ class ComposerStaticInit1b6fbb16024c07a28729efcdf1b64e92
         ),
         'Psr\\Http\\Server\\' => 
         array (
-            0 => __DIR__ . '/..' . '/psr/http-server-handler/src',
-            1 => __DIR__ . '/..' . '/psr/http-server-middleware/src',
+            0 => __DIR__ . '/..' . '/psr/http-server-middleware/src',
+            1 => __DIR__ . '/..' . '/psr/http-server-handler/src',
         ),
         'Psr\\Http\\Message\\' => 
         array (
@@ -45,6 +49,10 @@ class ComposerStaticInit1b6fbb16024c07a28729efcdf1b64e92
         'OpenSwoole\\Core\\' => 
         array (
             0 => __DIR__ . '/..' . '/openswoole/core/src',
+        ),
+        'App\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/app',
         ),
     );
 

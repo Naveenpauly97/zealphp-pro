@@ -1,8 +1,7 @@
 <?php
 
+use App\Controllers\LandingController;
 use ZealPHP\App;
-use ZealPHP\Controllers\LandingController;
-use ZealPHP\Models\Lead;
 use function ZealPHP\elog;
 
 $app = App::instance();
