@@ -34,7 +34,7 @@ A complete Yukthi landing page implementation for Selfmade Ninja Academy built w
 │       ├── main.php 
 │       └── contact.php 
 ├── route/
-│   └── landing.php                    # Landing page routes
+│   └── web.php                    # Landing page routes
 ├── public/
 │   ├── css/
 │   │    ├── contact.css
